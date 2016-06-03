@@ -1,4 +1,4 @@
-package com.colargtech.countonme.android;
+package com.colargtech.countonme;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

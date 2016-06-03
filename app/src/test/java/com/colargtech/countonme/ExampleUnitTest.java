@@ -1,4 +1,4 @@
-package com.colargtech.countonme.android;
+package com.colargtech.countonme;
 
 import org.junit.Test;
 

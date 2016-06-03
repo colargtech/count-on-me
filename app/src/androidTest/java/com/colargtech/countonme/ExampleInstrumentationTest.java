@@ -1,4 +1,4 @@
-package com.colargtech.countonme.android;
+package com.colargtech.countonme;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -24,6 +24,6 @@ public class ExampleInstrumentationTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.colargtech.countonme.android", appContext.getPackageName());
+        assertEquals("com.colargtech.countonme", appContext.getPackageName());
     }
 }
