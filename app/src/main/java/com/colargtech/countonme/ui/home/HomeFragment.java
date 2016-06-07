@@ -39,11 +39,6 @@ public class HomeFragment extends BaseFragment implements HomeView {
     }
 
     @Override
-    public String getTagName() {
-        return HomeFragment.class.getSimpleName();
-    }
-
-    @Override
     public void setText(String text) {
         ((TextView) getView().findViewById(R.id.textHome)).setText(text);
     }
