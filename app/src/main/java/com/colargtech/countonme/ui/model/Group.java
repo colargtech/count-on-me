@@ -1,12 +1,15 @@
 package com.colargtech.countonme.ui.model;
 
+import com.colargtech.countonme.commons.adapter.AdapterConstants;
+import com.colargtech.countonme.commons.adapter.ViewType;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author gdfesta
  */
-public class Group {
+public class Group implements ViewType{
     private final String name;
     private final List<Action> actions;
 
@@ -30,5 +33,10 @@ public class Group {
     public void removeAction(Action action) {
         this.actions.remove(action);
 
+    }
+
+    @Override
+    public int getViewType() {
+        return AdapterConstants.GROUP;
     }
 }

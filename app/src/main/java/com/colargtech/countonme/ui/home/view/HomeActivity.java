@@ -1,4 +1,4 @@
-package com.colargtech.countonme.ui.home;
+package com.colargtech.countonme.ui.home.view;
 
 import android.os.Bundle;
 
