@@ -4,7 +4,6 @@ import android.support.v4.util.SparseArrayCompat;
 
 import com.colargtech.countonme.commons.adapter.AdapterConstants;
 import com.colargtech.countonme.commons.adapter.BaseDelegateAdapter;
-import com.colargtech.countonme.commons.adapter.ViewTypeDelegateAdapter;
 import com.colargtech.countonme.ui.model.Group;
 
 import java.util.List;
@@ -15,11 +14,9 @@ import java.util.List;
 
 public class GroupsAdapter extends BaseDelegateAdapter {
 
-    @Override
-    protected SparseArrayCompat<ViewTypeDelegateAdapter> getDelegateAdapters() {
-        SparseArrayCompat<ViewTypeDelegateAdapter> adapters = new SparseArrayCompat<>(1);
-        adapters.put(AdapterConstants.GROUP, new GroupDelegateAdapter());
-        return adapters;
+    public GroupsAdapter(GroupDelegateAdapter.GroupAdapterActions groupAdapterActions) {
+        delegateAdapters = new SparseArrayCompat<>(1);
+        delegateAdapters.put(AdapterConstants.GROUP, new GroupDelegateAdapter(groupAdapterActions));
     }
 
     public void setGroups(List<Group> groups) {

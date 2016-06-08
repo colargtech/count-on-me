@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import com.colargtech.countonme.R;
 import com.colargtech.countonme.commons.ui.BaseFragment;
 import com.colargtech.countonme.ui.home.presenter.HomePresenter;
+import com.colargtech.countonme.ui.home.view.adapter.GroupDelegateAdapter;
 import com.colargtech.countonme.ui.home.view.adapter.GroupsAdapter;
 import com.colargtech.countonme.ui.model.Group;
 
@@ -21,14 +23,19 @@ import java.util.List;
 /**
  * @author juancho.
  */
+public class HomeFragment extends BaseFragment implements HomeView, GroupDelegateAdapter.GroupAdapterActions {
 
-public class HomeFragment extends BaseFragment implements HomeView {
+    interface HomeNavigation {
+        void createGroup();
+
+        void showDetailGroup(Group group);
+    }
 
     private HomePresenter homePresenter;
-
     private RecyclerView homeList;
     private GroupsAdapter adapter;
     private FloatingActionButton addGroupButton;
+    private HomeNavigation homeNavigation;
 
     static HomeFragment newInstance() {
         return new HomeFragment();
@@ -43,17 +50,25 @@ public class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        try {
+            homeNavigation = (HomeNavigation) getActivity();
+        } catch (ClassCastException e) {
+            Log.d(this.getClass().getSimpleName(), "Unable to cast Activity to HomeNavigation.");
+        }
+
         homeList = (RecyclerView) getView().findViewById(R.id.home_list);
         homeList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        adapter = new GroupsAdapter();
+        adapter = new GroupsAdapter(this);
         homeList.setAdapter(adapter);
 
         addGroupButton = (FloatingActionButton) getView().findViewById(R.id.home_fab_add_group);
         addGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Add group
                 Snackbar.make(v, "Add Group!", Snackbar.LENGTH_SHORT).show();
+                homeNavigation.createGroup();
+
             }
         });
 
@@ -65,11 +80,24 @@ public class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        homePresenter.detachView(false);
+        homePresenter.detachView(getRetainInstance());
     }
+
+    /**
+     * View Implementations
+     */
 
     @Override
     public void showGroups(List<Group> groups) {
         adapter.setGroups(groups);
+    }
+
+    /**
+     * Delegates Actions
+     */
+
+    @Override
+    public void showGroupDetail(Group group) {
+        homeNavigation.showDetailGroup(group);
     }
 }

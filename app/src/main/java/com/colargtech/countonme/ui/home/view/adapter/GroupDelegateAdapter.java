@@ -2,6 +2,7 @@ package com.colargtech.countonme.ui.home.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -14,6 +15,16 @@ import com.colargtech.countonme.ui.model.Group;
  */
 
 public class GroupDelegateAdapter implements ViewTypeDelegateAdapter<GroupDelegateAdapter.GroupViewHolder, Group> {
+
+    public interface GroupAdapterActions {
+        void showGroupDetail(Group group);
+    }
+
+    private GroupAdapterActions groupAdapterActions;
+
+    public GroupDelegateAdapter(GroupAdapterActions groupAdapterActions) {
+        this.groupAdapterActions = groupAdapterActions;
+    }
 
     @Override
     public GroupViewHolder onCreateViewHolder(ViewGroup parent) {
@@ -29,14 +40,19 @@ public class GroupDelegateAdapter implements ViewTypeDelegateAdapter<GroupDelega
 
         private TextView name;
 
-        public GroupViewHolder(ViewGroup parent) {
+        GroupViewHolder(ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.home_group_item, parent, false));
             name = (TextView) itemView.findViewById(R.id.group_name);
-
         }
 
-        public void bind(Group group) {
+        void bind(final Group group) {
             name.setText(group.getName());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    groupAdapterActions.showGroupDetail(group);
+                }
+            });
         }
     }
 }

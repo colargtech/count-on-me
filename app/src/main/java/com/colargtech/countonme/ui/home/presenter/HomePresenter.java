@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * @author juancho.
  */
-
 public class HomePresenter extends MvpBasePresenter<HomeView> {
 
     public void init() {

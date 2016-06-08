@@ -13,13 +13,10 @@ import java.util.List;
 
 public abstract class BaseDelegateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private SparseArrayCompat<ViewTypeDelegateAdapter> delegateAdapters;
+    protected SparseArrayCompat<ViewTypeDelegateAdapter> delegateAdapters;
     protected List<ViewType> items;
 
-    protected abstract SparseArrayCompat<ViewTypeDelegateAdapter> getDelegateAdapters();
-
     public BaseDelegateAdapter() {
-        delegateAdapters = getDelegateAdapters();
         items = new ArrayList<>();
     }
 
