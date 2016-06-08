@@ -55,6 +55,7 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
             homeNavigation = (HomeNavigation) getActivity();
         } catch (ClassCastException e) {
             Log.d(this.getClass().getSimpleName(), "Unable to cast Activity to HomeNavigation.");
+            throw e;
         }
 
         homeList = (RecyclerView) getView().findViewById(R.id.home_list);

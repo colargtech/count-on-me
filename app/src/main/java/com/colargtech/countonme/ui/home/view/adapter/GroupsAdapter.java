@@ -2,8 +2,8 @@ package com.colargtech.countonme.ui.home.view.adapter;
 
 import android.support.v4.util.SparseArrayCompat;
 
-import com.colargtech.countonme.commons.adapter.AdapterConstants;
 import com.colargtech.countonme.commons.adapter.BaseDelegateAdapter;
+import com.colargtech.countonme.ui.adapter.AdapterConstants;
 import com.colargtech.countonme.ui.model.Group;
 
 import java.util.List;
@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * @author juancho.
  */
-
 public class GroupsAdapter extends BaseDelegateAdapter {
 
     public GroupsAdapter(GroupDelegateAdapter.GroupAdapterActions groupAdapterActions) {

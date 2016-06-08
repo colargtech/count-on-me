@@ -1,4 +1,4 @@
-package com.colargtech.countonme.commons.adapter;
+package com.colargtech.countonme.ui.adapter;
 
 /**
  * @author juancho.

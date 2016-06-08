@@ -1,6 +1,6 @@
 package com.colargtech.countonme.ui.model;
 
-import com.colargtech.countonme.commons.adapter.AdapterConstants;
+import com.colargtech.countonme.ui.adapter.AdapterConstants;
 import com.colargtech.countonme.commons.adapter.ViewType;
 
 import java.util.ArrayList;
