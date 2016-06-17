@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.colargtech.adapters.ViewTypeDelegateAdapter;
 import com.colargtech.countonme.R;
-import com.colargtech.countonme.commons.adapter.ViewTypeDelegateAdapter;
 import com.colargtech.countonme.ui.model.Group;
 
 /**

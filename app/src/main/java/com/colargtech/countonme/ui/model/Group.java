@@ -1,7 +1,7 @@
 package com.colargtech.countonme.ui.model;
 
+import com.colargtech.adapters.ViewType;
 import com.colargtech.countonme.ui.adapter.AdapterConstants;
-import com.colargtech.countonme.commons.adapter.ViewType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author gdfesta
  */
-public class Group implements ViewType{
+public class Group implements ViewType {
     private final String name;
     private final List<Action> actions;
 

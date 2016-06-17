@@ -2,7 +2,7 @@ package com.colargtech.countonme.ui.home.view.adapter;
 
 import android.support.v4.util.SparseArrayCompat;
 
-import com.colargtech.countonme.commons.adapter.BaseDelegateAdapter;
+import com.colargtech.adapters.BaseDelegateAdapter;
 import com.colargtech.countonme.ui.adapter.AdapterConstants;
 import com.colargtech.countonme.ui.model.Group;
 
