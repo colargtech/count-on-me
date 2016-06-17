@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.squareup.sqldelight'
 
 android {
     compileSdkVersion 24
@@ -28,7 +29,6 @@ dependencies {
     compile 'com.android.support:design:24.0.0'
     compile 'com.android.support:recyclerview-v7:24.0.0'
 
-    // ColargTech Libs
     compile 'com.github.colargtech:adapters:master-SNAPSHOT'
 
     //DI
@@ -39,6 +39,12 @@ dependencies {
     //RX
     compile 'io.reactivex:rxandroid:1.2.0'
     compile 'io.reactivex:rxjava:1.1.5'
+
+    //DB
+    compile 'com.squareup.sqlbrite:sqlbrite:0.6.3'
+
+    // Debug DB
+    compile 'com.facebook.stetho:stetho:1.3.1'
 
     //Testing
     testCompile('junit:junit:4.12') {
@@ -51,4 +57,13 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support:support-annotations:24.0.0'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.squareup.sqldelight:gradle-plugin:0.4.2'
+    }
 }

@@ -1,0 +1,9 @@
+CREATE TABLE count (
+    _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    date INTEGER AS 'java.util.Calendar' NOT NULL,
+    counts INTEGER AS Integer NOT NULL
+);
+
+select_all:
+SELECT *
+FROM count;
