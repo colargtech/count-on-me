@@ -10,12 +10,18 @@ import java.util.List;
  * @author gdfesta
  */
 public class Group implements ViewType {
+    private final long id;
     private final String name;
     private final List<Action> actions;
 
-    public Group(String name) {
+    public Group(long id, String name) {
+        this.id = id;
         this.name = name;
         this.actions = new ArrayList<>();
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {

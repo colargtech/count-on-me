@@ -10,8 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class CountOnMeOpenHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "FeedReader.db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "CountOnMe.db";
 
     public CountOnMeOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

@@ -19,7 +19,8 @@ public class GroupsAdapter extends BaseDelegateAdapter {
     }
 
     public void setGroups(List<Group> groups) {
+        items.clear();
         items.addAll(groups);
-        notifyItemRangeInserted(0, items.size());
+        notifyDataSetChanged();
     }
 }

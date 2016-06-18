@@ -10,3 +10,8 @@ select_by_name:
 SELECT *
 FROM groups
 WHERE name = ?;
+
+update_name:
+UPDATE groups
+SET name = ?
+WHERE _id = ?;
