@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.colargtech.countonme.commons.mvp.MvpBaseRxPresenter;
 import com.colargtech.countonme.db.model.GroupDb;
+import com.colargtech.countonme.db.model.GroupModel;
 import com.colargtech.countonme.ui.home.view.HomeView;
 import com.colargtech.countonme.ui.model.Group;
 import com.squareup.sqlbrite.BriteDatabase;
@@ -37,11 +38,7 @@ public class HomePresenter extends MvpBaseRxPresenter<HomeView> {
 
 
     public void createGroup(String groupName) {
-        db.insert(GroupDb.TABLE_NAME,
-                new GroupDb.Marshal()
-                        .name(groupName)
-                        .asContentValues()
-        );
+        db.insert(GroupDb.TABLE_NAME, GroupDb.marshal(groupName));
     }
 
     private void registerShowGroups() {
@@ -66,7 +63,7 @@ public class HomePresenter extends MvpBaseRxPresenter<HomeView> {
                             cursor.moveToFirst();
                             List<Group> groups = new ArrayList<>();
                             do {
-                                GroupDb group = GroupDb.MAPPER.map(cursor);
+                                GroupDb group = GroupDb.mapper(cursor);
                                 groups.add(new Group(group._id(), group.name()));
                             } while (cursor.moveToNext());
                             cursor.close();
