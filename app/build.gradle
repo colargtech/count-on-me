@@ -30,15 +30,12 @@ dependencies {
 
     // ColargTech Libs
     compile 'com.github.colargtech:adapters:master-SNAPSHOT'
+    compile 'com.github.colargtech:rxrealm:99d252997a'
 
     //DI
     apt 'com.google.dagger:dagger-compiler:2.0.1'
     compile 'com.google.dagger:dagger:2.0.1'
     provided 'org.glassfish:javax.annotation:10.0-b28'
-
-    //RX
-    compile 'io.reactivex:rxandroid:1.2.0'
-    compile 'io.reactivex:rxjava:1.1.5'
 
     //Testing
     testCompile('junit:junit:4.12') {
