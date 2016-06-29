@@ -6,7 +6,6 @@ import android.content.Context;
 import com.colargtech.countonme.di.AppModule;
 import com.colargtech.countonme.di.home.DaggerHomeComponent;
 import com.colargtech.countonme.di.home.HomeComponent;
-import com.colargtech.countonme.di.home.HomeModule;
 
 /**
  * @author juancho.
@@ -35,7 +34,6 @@ public class CountOnMeApp extends Application {
 
         homeComponent = DaggerHomeComponent.builder()
                 .appModule(appModule)
-                .homeModule(new HomeModule())
                 .build();
     }
 }

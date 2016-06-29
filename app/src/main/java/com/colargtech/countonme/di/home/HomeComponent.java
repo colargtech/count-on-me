@@ -12,7 +12,7 @@ import dagger.Component;
  */
 @Singleton
 @Component(
-        modules = {AppModule.class, HomeModule.class}
+        modules = {AppModule.class}
 )
 public interface HomeComponent {
 
