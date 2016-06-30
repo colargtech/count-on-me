@@ -13,6 +13,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import rx.Observable;
+import rx.subjects.Subject;
 
 /**
  * @author gdfesta
@@ -20,10 +21,12 @@ import rx.Observable;
 @Singleton
 public class CountOnMeDBManager {
     private final RealmConfiguration configuration;
+    private final Subject<GroupDB, GroupDB> subject;
 
     @Inject
-    public CountOnMeDBManager(RealmConfiguration configuration) {
+    public CountOnMeDBManager(RealmConfiguration configuration, Subject<GroupDB, GroupDB> subject) {
         this.configuration = configuration;
+        this.subject = subject;
     }
 
     public Observable<GroupDB> getAllGroups() {
@@ -33,11 +36,10 @@ public class CountOnMeDBManager {
                     public RealmResults<GroupDB> call(Realm realm) {
                         return realm.where(GroupDB.class).findAll();
                     }
-                }, this.configuration)
-                .onBackpressureBuffer();
+                }, this.configuration);
     }
 
-    public Observable<GroupDB> createGroup(String name) {
+    public void createGroup(String name) {
         final Realm realm = Realm.getInstance(this.configuration);
         realm.beginTransaction();
         GroupDB groupDB = new GroupDB();
@@ -46,6 +48,6 @@ public class CountOnMeDBManager {
         realm.copyToRealmOrUpdate(groupDB);
         realm.commitTransaction();
         realm.close();
-        return Observable.just(groupDB);
+        subject.onNext(groupDB);
     }
 }
