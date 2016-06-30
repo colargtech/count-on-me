@@ -19,7 +19,7 @@ import com.colargtech.countonme.ui.home.view.adapter.GroupDelegateAdapter;
 import com.colargtech.countonme.ui.home.view.adapter.GroupsAdapter;
 import com.colargtech.countonme.ui.model.Group;
 
-import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -82,7 +82,8 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
                     @Override
                     public void onClick(View v) {
                         Snackbar.make(v, "Add Group!", Snackbar.LENGTH_SHORT).show();
-                        homeNavigation.createGroup();
+                        //TODO return to homeNavigation.createGroup(); This is just to show how subject works
+                        homePresenter.createGroup(new Group(UUID.randomUUID().toString()));
                     }
                 });
 
@@ -101,8 +102,8 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
      */
 
     @Override
-    public void showGroups(List<Group> groups) {
-        adapter.setGroups(groups);
+    public void showGroup(Group group) {
+        adapter.addGroup(group);
     }
 
     /**
