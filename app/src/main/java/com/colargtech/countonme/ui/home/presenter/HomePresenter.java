@@ -1,6 +1,6 @@
 package com.colargtech.countonme.ui.home.presenter;
 
-import com.colargtech.countonme.commons.mvp.MvpBasePresenter;
+import com.colargtech.countonme.commons.rx.MvpRxBasePresenter;
 import com.colargtech.countonme.database.manager.CountOnMeDBManager;
 import com.colargtech.countonme.database.model.GroupDB;
 import com.colargtech.countonme.ui.home.view.HomeView;
@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -20,10 +21,11 @@ import rx.subjects.Subject;
  * @author juancho.
  */
 @Singleton
-public class HomePresenter extends MvpBasePresenter<HomeView> {
+public class HomePresenter extends MvpRxBasePresenter<HomeView> {
 
     private final CountOnMeDBManager countOnMeDBManager;
     private final Subject<GroupDB, GroupDB> subject;
+
 
     @Inject
     public HomePresenter(CountOnMeDBManager countOnMeDBManager, Subject<GroupDB, GroupDB> subject) {
@@ -31,18 +33,19 @@ public class HomePresenter extends MvpBasePresenter<HomeView> {
         this.subject = subject;
     }
 
-    public void init() {
-        //TODO Check when to unsubscribe
-        subscribe(countOnMeDBManager.getAllGroups());
-        subscribe(subject);
+    @Override
+    public void attachView(HomeView view) {
+        super.attachView(view);
+        addSubscription(subscribe(countOnMeDBManager.getAllGroups()));
+        addSubscription(subscribe(subject));
     }
 
     public void createGroup(Group group) {
         countOnMeDBManager.createGroup(group.getName());
     }
 
-    private void subscribe(Observable<GroupDB> observable) {
-        observable.map(
+    private Subscription subscribe(Observable<GroupDB> observable) {
+        return observable.map(
                 new Func1<GroupDB, Group>() {
                     @Override
                     public Group call(GroupDB groupDB) {
@@ -54,9 +57,9 @@ public class HomePresenter extends MvpBasePresenter<HomeView> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Group>() {
                     @Override
-                    public void call(Group groups) {
+                    public void call(Group group) {
                         if (isViewAttached()) {
-                            getView().showGroup(groups);
+                            getView().addGroup(group);
                         }
                     }
                 });

@@ -1,15 +1,17 @@
 package com.colargtech.countonme.ui.home.view;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.colargtech.countonme.CountOnMeApp;
 import com.colargtech.countonme.R;
@@ -19,18 +21,16 @@ import com.colargtech.countonme.ui.home.view.adapter.GroupDelegateAdapter;
 import com.colargtech.countonme.ui.home.view.adapter.GroupsAdapter;
 import com.colargtech.countonme.ui.model.Group;
 
-import java.util.UUID;
-
 import javax.inject.Inject;
 
 /**
+ * Show Groups.
+ *
  * @author juancho.
  */
 public class HomeFragment extends BaseFragment implements HomeView, GroupDelegateAdapter.GroupAdapterActions {
 
     interface HomeNavigation {
-        void createGroup();
-
         void showDetailGroup(Group group);
     }
 
@@ -40,6 +40,7 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
     private RecyclerView homeList;
     private GroupsAdapter adapter;
     private HomeNavigation homeNavigation;
+    private AlertDialog addGroupDialog;
 
     static HomeFragment newInstance() {
         return new HomeFragment();
@@ -49,17 +50,6 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
     protected void injectDependencies() {
         super.injectDependencies();
         CountOnMeApp.get(getContext()).getHomeComponent().inject(this);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            homeNavigation = (HomeNavigation) getActivity();
-        } catch (ClassCastException e) {
-            Log.d(this.getClass().getSimpleName(), "Unable to cast Activity to HomeNavigation.");
-            throw e;
-        }
     }
 
     @Nullable
@@ -72,6 +62,13 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        try {
+            homeNavigation = (HomeNavigation) getActivity();
+        } catch (ClassCastException e) {
+            Log.d(this.getClass().getSimpleName(), "Unable to cast Activity to HomeNavigation.");
+            throw e;
+        }
+
         homeList = (RecyclerView) getView().findViewById(R.id.home_list);
         homeList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         adapter = new GroupsAdapter(this);
@@ -81,20 +78,20 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Snackbar.make(v, "Add Group!", Snackbar.LENGTH_SHORT).show();
-                        //TODO return to homeNavigation.createGroup(); This is just to show how subject works
-                        homePresenter.createGroup(new Group(UUID.randomUUID().toString()));
+                        showDialogAddGroup();
                     }
                 });
 
         homePresenter.attachView(this);
-        homePresenter.init();
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDetach() {
+        super.onDetach();
         homePresenter.detachView(getRetainInstance());
+        if (addGroupDialog != null && addGroupDialog.isShowing()) {
+            addGroupDialog.dismiss();
+        }
     }
 
     /**
@@ -102,7 +99,7 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
      */
 
     @Override
-    public void showGroup(Group group) {
+    public void addGroup(Group group) {
         adapter.addGroup(group);
     }
 
@@ -113,5 +110,44 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
     @Override
     public void showGroupDetail(Group group) {
         homeNavigation.showDetailGroup(group);
+    }
+
+
+    /**
+     * Private methods
+     */
+
+    private void showDialogAddGroup() {
+        final EditText etGroupName = new EditText(getContext());
+        etGroupName.setHint(R.string.add_group_hint);
+
+        addGroupDialog = new AlertDialog.Builder(getContext())
+                .setTitle(R.string.add_group_title)
+                .setView(etGroupName)
+                .setPositiveButton(R.string.add_group_accept, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // intentionally empty.
+                    }
+                })
+                .setNegativeButton(R.string.add_group_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create();
+        addGroupDialog.show();
+        addGroupDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (TextUtils.isEmpty(etGroupName.getText())) {
+                    etGroupName.setError(getResources().getString(R.string.add_group_invalid_value));
+                } else {
+                    homePresenter.createGroup(new Group(etGroupName.getText().toString()));
+                    addGroupDialog.dismiss();
+                }
+            }
+        });
     }
 }

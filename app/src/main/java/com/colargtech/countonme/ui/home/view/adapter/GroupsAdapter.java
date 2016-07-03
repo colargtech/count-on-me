@@ -18,9 +18,9 @@ public class GroupsAdapter extends BaseDelegateAdapter {
         delegateAdapters.put(AdapterConstants.GROUP, new GroupDelegateAdapter(groupAdapterActions));
     }
 
-    public void addGroup(Group groups) {
+    public void addGroup(Group group) {
         int position = items.size();
-        items.add(groups);
+        items.add(group);
         notifyItemInserted(position);
     }
 }

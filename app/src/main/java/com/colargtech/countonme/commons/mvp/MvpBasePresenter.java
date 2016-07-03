@@ -1,5 +1,6 @@
 package com.colargtech.countonme.commons.mvp;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 
@@ -13,6 +14,7 @@ public class MvpBasePresenter<V extends MvpView> implements MvpPresenter<V> {
 
     private WeakReference<V> viewRef;
 
+    @CallSuper
     @UiThread
     @Override
     public void attachView(V view) {
@@ -34,6 +36,7 @@ public class MvpBasePresenter<V extends MvpView> implements MvpPresenter<V> {
      * Will be called if the view has been destroyed. Typically this method will be invoked from
      * <code>Activity.detachView()</code> or <code>Fragment.onDestroyView()</code>
      */
+    @CallSuper
     @UiThread
     @Override
     public void detachView(boolean retainInstance) {

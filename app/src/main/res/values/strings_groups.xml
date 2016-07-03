@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_group_title">Group Name</string>
+    <string name="add_group_hint">i.e: Health</string>
+    <string name="add_group_accept">Accept</string>
+    <string name="add_group_cancel">Cancel</string>
+    <string name="add_group_invalid_value">Invalid value</string>
+</resources>
