@@ -3,6 +3,7 @@ package com.colargtech.countonme.ui.home.view;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.colargtech.countonme.R;
 import com.colargtech.countonme.commons.ui.BaseActivity;
 import com.colargtech.countonme.ui.model.Group;
 
@@ -15,13 +16,9 @@ public class HomeActivity extends BaseActivity implements HomeFragment.HomeNavig
         if (savedInstanceState == null) {
             changeFragment(HomeFragment.newInstance());
         }
+        setTitle(R.string.app_name);
     }
 
-
-    @Override
-    public void createGroup() {
-        // TODO
-    }
 
     @Override
     public void showDetailGroup(Group group) {

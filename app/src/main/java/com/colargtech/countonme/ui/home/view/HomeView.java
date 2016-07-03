@@ -11,6 +11,6 @@ import java.util.List;
 
 public interface HomeView extends MvpView {
 
-    void showGroup(Group group);
+    void addGroup(Group group);
 
 }
