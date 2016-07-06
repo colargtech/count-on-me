@@ -5,7 +5,6 @@ import android.widget.Toast;
 
 import com.colargtech.countonme.R;
 import com.colargtech.countonme.commons.ui.BaseActivity;
-import com.colargtech.countonme.ui.count.CountActivity;
 import com.colargtech.countonme.ui.model.GroupUI;
 
 public class HomeActivity extends BaseActivity implements HomeFragment.HomeNavigation {
