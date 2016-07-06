@@ -19,7 +19,7 @@ import com.colargtech.countonme.commons.ui.BaseFragment;
 import com.colargtech.countonme.ui.home.presenter.HomePresenter;
 import com.colargtech.countonme.ui.home.view.adapter.GroupDelegateAdapter;
 import com.colargtech.countonme.ui.home.view.adapter.GroupsAdapter;
-import com.colargtech.countonme.ui.model.Group;
+import com.colargtech.countonme.ui.model.GroupUI;
 
 import javax.inject.Inject;
 
@@ -31,13 +31,12 @@ import javax.inject.Inject;
 public class HomeFragment extends BaseFragment implements HomeView, GroupDelegateAdapter.GroupAdapterActions {
 
     interface HomeNavigation {
-        void showDetailGroup(Group group);
+        void showDetailGroup(GroupUI groupUI);
     }
 
     @Inject
     HomePresenter homePresenter;
 
-    private RecyclerView homeList;
     private GroupsAdapter adapter;
     private HomeNavigation homeNavigation;
     private AlertDialog addGroupDialog;
@@ -50,6 +49,14 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
     protected void injectDependencies() {
         super.injectDependencies();
         CountOnMeApp.get(getContext()).getHomeComponent().inject(this);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        adapter = new GroupsAdapter(this);
+        homePresenter.onCreate(this);
+        attachCallbacks(homePresenter);
     }
 
     @Nullable
@@ -69,9 +76,8 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
             throw e;
         }
 
-        homeList = (RecyclerView) getView().findViewById(R.id.home_list);
+        RecyclerView homeList = (RecyclerView) getView().findViewById(R.id.home_list);
         homeList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        adapter = new GroupsAdapter(this);
         homeList.setAdapter(adapter);
 
         getView().findViewById(R.id.home_fab_add_group)
@@ -82,7 +88,6 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
                     }
                 });
 
-        homePresenter.attachView(this);
     }
 
     @Override
@@ -99,8 +104,8 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
      */
 
     @Override
-    public void addGroup(Group group) {
-        adapter.addGroup(group);
+    public void addGroup(GroupUI groupUI) {
+        adapter.addGroup(groupUI);
     }
 
     /**
@@ -108,8 +113,8 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
      */
 
     @Override
-    public void showGroupDetail(Group group) {
-        homeNavigation.showDetailGroup(group);
+    public void showGroupDetail(GroupUI groupUI) {
+        homeNavigation.showDetailGroup(groupUI);
     }
 
 
@@ -144,7 +149,7 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
                 if (TextUtils.isEmpty(etGroupName.getText())) {
                     etGroupName.setError(getResources().getString(R.string.add_group_invalid_value));
                 } else {
-                    homePresenter.createGroup(new Group(etGroupName.getText().toString()));
+                    homePresenter.createGroup(etGroupName.getText().toString());
                     addGroupDialog.dismiss();
                 }
             }

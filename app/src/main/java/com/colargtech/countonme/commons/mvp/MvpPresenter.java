@@ -8,7 +8,7 @@ import android.support.annotation.UiThread;
 interface MvpPresenter<V extends MvpView> {
 
     @UiThread
-    void attachView(V view);
+    void onCreate(V view);
 
     @UiThread
     void detachView(boolean retainInstance);

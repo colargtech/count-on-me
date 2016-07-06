@@ -10,14 +10,14 @@ import java.lang.ref.WeakReference;
  * @author juancho.
  */
 
-public class MvpBasePresenter<V extends MvpView> implements MvpPresenter<V> {
+public class MvpBasePresenter<V extends MvpView> implements MvpPresenter<V>, UICallbacks {
 
     private WeakReference<V> viewRef;
 
     @CallSuper
     @UiThread
     @Override
-    public void attachView(V view) {
+    public void onCreate(V view) {
         viewRef = new WeakReference<V>(view);
     }
 
@@ -44,5 +44,15 @@ public class MvpBasePresenter<V extends MvpView> implements MvpPresenter<V> {
             viewRef.clear();
             viewRef = null;
         }
+    }
+
+    @Override
+    public void onResume() {
+        //no-op
+    }
+
+    @Override
+    public void onPause() {
+        //no-op
     }
 }

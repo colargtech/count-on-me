@@ -14,7 +14,6 @@ public class CountDB extends RealmObject {
     @PrimaryKey
     private String id;
 
-    private long counts;
     @Required
     private Date date;
 
@@ -27,14 +26,6 @@ public class CountDB extends RealmObject {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public long getCounts() {
-        return counts;
-    }
-
-    public void setCounts(long counts) {
-        this.counts = counts;
     }
 
     public Date getDate() {

@@ -20,16 +20,14 @@ public class MvpRxBasePresenter<V extends MvpView> extends MvpBasePresenter<V> {
     @CallSuper
     @UiThread
     @Override
-    public void attachView(V view) {
-        super.attachView(view);
+    public void onCreate(V view) {
+        super.onCreate(view);
         subscriptions = new CompositeSubscription();
     }
 
-    @CallSuper
-    @UiThread
     @Override
-    public void detachView(boolean retainInstance) {
-        super.detachView(retainInstance);
+    public void onPause() {
+        super.onPause();
         subscriptions.clear();
     }
 

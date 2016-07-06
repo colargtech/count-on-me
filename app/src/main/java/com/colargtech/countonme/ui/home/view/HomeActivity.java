@@ -5,7 +5,8 @@ import android.widget.Toast;
 
 import com.colargtech.countonme.R;
 import com.colargtech.countonme.commons.ui.BaseActivity;
-import com.colargtech.countonme.ui.model.Group;
+import com.colargtech.countonme.ui.count.CountActivity;
+import com.colargtech.countonme.ui.model.GroupUI;
 
 public class HomeActivity extends BaseActivity implements HomeFragment.HomeNavigation {
 
@@ -21,8 +22,7 @@ public class HomeActivity extends BaseActivity implements HomeFragment.HomeNavig
 
 
     @Override
-    public void showDetailGroup(Group group) {
-        // TODO
-        Toast.makeText(this, "Show Group with name: " + group.getName(), Toast.LENGTH_SHORT).show();
+    public void showDetailGroup(GroupUI groupUI) {
+        Toast.makeText(this, "Show Group with name: " + groupUI.getName(), Toast.LENGTH_SHORT).show();
     }
 }

@@ -8,16 +8,16 @@ import android.widget.TextView;
 
 import com.colargtech.adapters.ViewTypeDelegateAdapter;
 import com.colargtech.countonme.R;
-import com.colargtech.countonme.ui.model.Group;
+import com.colargtech.countonme.ui.model.GroupUI;
 
 /**
  * @author juancho.
  */
 
-public class GroupDelegateAdapter implements ViewTypeDelegateAdapter<GroupDelegateAdapter.GroupViewHolder, Group> {
+public class GroupDelegateAdapter implements ViewTypeDelegateAdapter<GroupDelegateAdapter.GroupViewHolder, GroupUI> {
 
     public interface GroupAdapterActions {
-        void showGroupDetail(Group group);
+        void showGroupDetail(GroupUI groupUI);
     }
 
     private GroupAdapterActions groupAdapterActions;
@@ -32,7 +32,7 @@ public class GroupDelegateAdapter implements ViewTypeDelegateAdapter<GroupDelega
     }
 
     @Override
-    public void onBindViewHolder(GroupViewHolder holder, Group item) {
+    public void onBindViewHolder(GroupViewHolder holder, GroupUI item) {
         holder.bind(item);
     }
 
@@ -45,12 +45,12 @@ public class GroupDelegateAdapter implements ViewTypeDelegateAdapter<GroupDelega
             name = (TextView) itemView.findViewById(R.id.group_name);
         }
 
-        void bind(final Group group) {
-            name.setText(group.getName());
+        void bind(final GroupUI groupUI) {
+            name.setText(groupUI.getName());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    groupAdapterActions.showGroupDetail(group);
+                    groupAdapterActions.showGroupDetail(groupUI);
                 }
             });
         }

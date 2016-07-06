@@ -3,16 +3,13 @@ package com.colargtech.countonme.di;
 import android.content.Context;
 
 import com.colargtech.countonme.CountOnMeApp;
-import com.colargtech.countonme.database.CountOnMeDatabaseModule;
-import com.colargtech.countonme.database.model.GroupDB;
+import com.colargtech.countonme.database.CountOnMeDatabaseRealmModule;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import io.realm.RealmConfiguration;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.Subject;
 
 /**
  * @author juancho.
@@ -43,14 +40,8 @@ public class AppModule {
         return new RealmConfiguration
                 .Builder(this.app)
                 .name("countonme.app")
-                .modules(new CountOnMeDatabaseModule())
+                .modules(new CountOnMeDatabaseRealmModule())
                 .deleteRealmIfMigrationNeeded()
                 .build();
-    }
-
-    @Provides
-    @Singleton
-    public Subject<GroupDB, GroupDB> provideGroupDBSubject() {
-        return BehaviorSubject.create();
     }
 }

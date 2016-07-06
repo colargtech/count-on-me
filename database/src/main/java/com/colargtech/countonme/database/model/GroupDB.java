@@ -1,5 +1,11 @@
 package com.colargtech.countonme.database.model;
 
+import com.colargtech.countonme.model.Action;
+import com.colargtech.countonme.model.Group;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -43,5 +49,15 @@ public class GroupDB extends RealmObject {
 
     public void setActions(RealmList<ActionDB> actions) {
         this.actions = actions;
+    }
+
+    public Group toGroup() {
+        List<Action> actions = new ArrayList<>();
+        if (this.actions != null) {
+            for (ActionDB action : this.actions) {
+                actions.add(action.toAction());
+            }
+        }
+        return new Group(id, name, actions);
     }
 }

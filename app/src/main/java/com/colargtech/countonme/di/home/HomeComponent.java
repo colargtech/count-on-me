@@ -1,5 +1,6 @@
 package com.colargtech.countonme.di.home;
 
+import com.colargtech.countonme.database.di.CountOnMeDatabaseModule;
 import com.colargtech.countonme.di.AppModule;
 import com.colargtech.countonme.ui.home.view.HomeFragment;
 
@@ -12,7 +13,7 @@ import dagger.Component;
  */
 @Singleton
 @Component(
-        modules = {AppModule.class}
+        modules = {AppModule.class, CountOnMeDatabaseModule.class}
 )
 public interface HomeComponent {
 

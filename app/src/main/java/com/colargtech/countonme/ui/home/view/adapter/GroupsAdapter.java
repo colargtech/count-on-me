@@ -4,9 +4,7 @@ import android.support.v4.util.SparseArrayCompat;
 
 import com.colargtech.adapters.BaseDelegateAdapter;
 import com.colargtech.countonme.ui.adapter.AdapterConstants;
-import com.colargtech.countonme.ui.model.Group;
-
-import java.util.List;
+import com.colargtech.countonme.ui.model.GroupUI;
 
 /**
  * @author juancho.
@@ -18,9 +16,11 @@ public class GroupsAdapter extends BaseDelegateAdapter {
         delegateAdapters.put(AdapterConstants.GROUP, new GroupDelegateAdapter(groupAdapterActions));
     }
 
-    public void addGroup(Group group) {
-        int position = items.size();
-        items.add(group);
-        notifyItemInserted(position);
+    public void addGroup(GroupUI groupUI) {
+        if (!items.contains(groupUI)) {
+            int position = items.size();
+            items.add(groupUI);
+            notifyItemInserted(position);
+        }
     }
 }

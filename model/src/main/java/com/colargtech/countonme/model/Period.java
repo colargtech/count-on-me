@@ -1,4 +1,4 @@
-package com.colargtech.countonme.ui.model;
+package com.colargtech.countonme.model;
 
 /**
  * @author gdfesta
