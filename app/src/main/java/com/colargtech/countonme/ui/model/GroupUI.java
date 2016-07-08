@@ -10,36 +10,20 @@ import java.util.List;
  * @author gdfesta
  */
 public class GroupUI implements ViewType {
-    private String id;
+    private final String id;
     private final String name;
-    private final List<ActionUI> actionUIs;
 
     public GroupUI(String id, String name) {
         this.id = id;
         this.name = name;
-        this.actionUIs = new ArrayList<>();
     }
 
-    public GroupUI(String name) {
-        this.name = name;
-        this.actionUIs = new ArrayList<>();
+    public String getId() {
+        return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    public List<ActionUI> getActions() {
-        return actionUIs;
-    }
-
-    public void addAction(ActionUI actionUI) {
-        this.actionUIs.add(actionUI);
-    }
-
-    public void removeAction(ActionUI actionUI) {
-        this.actionUIs.remove(actionUI);
-
     }
 
     @Override

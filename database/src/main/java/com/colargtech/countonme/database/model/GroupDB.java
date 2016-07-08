@@ -25,6 +25,7 @@ public class GroupDB extends RealmObject {
     private RealmList<ActionDB> actions;
 
     public GroupDB() {
+        actions = new RealmList<>();
     }
 
     public String getId() {
@@ -53,11 +54,13 @@ public class GroupDB extends RealmObject {
 
     public Group toGroup() {
         List<Action> actions = new ArrayList<>();
-        if (this.actions != null) {
-            for (ActionDB action : this.actions) {
-                actions.add(action.toAction());
-            }
+        for (ActionDB action : this.actions) {
+            actions.add(action.toAction());
         }
         return new Group(id, name, actions);
+    }
+
+    public void addAction(ActionDB action) {
+        this.actions.add(action);
     }
 }

@@ -13,6 +13,7 @@ import java.util.Map;
  * @author gdfesta
  */
 public class Action implements Parcelable {
+    public final String id;
     public final String name;
     public final Period period;
     public final int incrementBy;
@@ -20,14 +21,16 @@ public class Action implements Parcelable {
     public int maxPerPeriod;
 
     protected Action(Builder builder) {
+        id = builder.id;
         name = builder.name;
         period = builder.period;
         incrementBy = builder.incrementBy;
         maxPerPeriod = builder.maxPerPeriod;
-        countsByDate = new HashMap<>();
+        countsByDate = builder.countsByDate;
     }
 
     protected Action(Parcel in) {
+        id = in.readString();
         name = in.readString();
         incrementBy = in.readInt();
         maxPerPeriod = in.readInt();
@@ -54,18 +57,22 @@ public class Action implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
         parcel.writeString(name);
         parcel.writeInt(incrementBy);
         parcel.writeInt(maxPerPeriod);
     }
 
     public static final class Builder {
+        private final String id;
         private final String name;
         private final Period period;
         private final int incrementBy;
         private int maxPerPeriod;
+        private Map<Date, Integer> countsByDate;
 
-        public Builder(@NonNull String name, @NonNull Period period, int incrementBy) {
+        public Builder(@NonNull String id, @NonNull String name, @NonNull Period period, int incrementBy) {
+            this.id = id;
             this.name = name;
             this.period = period;
             this.incrementBy = incrementBy;
@@ -74,6 +81,12 @@ public class Action implements Parcelable {
         @NonNull
         public Builder withMaxPerPeriod(int val) {
             maxPerPeriod = val;
+            return this;
+        }
+
+        @NonNull
+        public Builder withCountForDate(Map<Date, Integer> countsByDate) {
+            this.countsByDate = countsByDate;
             return this;
         }
 

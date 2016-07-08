@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/action_count_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/action_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Vitaminas"
+        tools:textSize="40sp"
+        app:layout_constraintLeft_toLeftOf="@+id/action_count_container"
+        app:layout_constraintTop_toTopOf="@+id/action_count_container"
+        android:layout_marginTop="40dp"
+        app:layout_constraintRight_toRightOf="@+id/action_count_container" />
+
+    <DatePicker
+        android:id="@+id/date_picker"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        app:layout_constraintLeft_toLeftOf="@+id/action_count_container"
+        app:layout_constraintTop_toBottomOf="@+id/action_title"
+        android:layout_marginTop="8dp"
+        app:layout_constraintRight_toRightOf="@+id/action_count_container" />
+
+    <TextView
+        android:id="@+id/count_for_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="72dp"
+        tools:text="32"
+        app:layout_constraintLeft_toRightOf="@+id/btn_decrease_one"
+        app:layout_constraintTop_toBottomOf="@+id/date_picker"
+        app:layout_constraintRight_toLeftOf="@+id/btn_increase_one"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintVertical_bias="0.25" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_decrease_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintLeft_toLeftOf="@+id/action_count_container"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/date_picker"
+        android:layout_marginTop="8dp"
+        app:layout_constraintRight_toLeftOf="@+id/date_picker"
+        android:layout_marginEnd="48dp"
+        app:layout_constraintHorizontal_bias="0.25" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_increase_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintLeft_toRightOf="@+id/date_picker"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/date_picker"
+        android:layout_marginTop="8dp"
+        app:layout_constraintRight_toRightOf="@+id/action_count_container"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintHorizontal_bias="0.75" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_decrease_custom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintLeft_toRightOf="@+id/btn_decrease_one"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/btn_decrease_one"
+        android:layout_marginTop="32dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_increase_custom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@+id/btn_increase_one"
+        android:layout_marginTop="32dp"
+        app:layout_constraintRight_toLeftOf="@+id/btn_increase_one"
+        android:layout_marginEnd="8dp" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="7dp"
+        android:background="@android:color/background_dark"
+        app:layout_constraintLeft_toLeftOf="@+id/action_count_container"
+        app:layout_constraintTop_toBottomOf="@+id/btn_increase_custom"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginLeft="32dp"
+        app:layout_constraintRight_toRightOf="@+id/action_count_container" />
+
+</android.support.constraint.ConstraintLayout>

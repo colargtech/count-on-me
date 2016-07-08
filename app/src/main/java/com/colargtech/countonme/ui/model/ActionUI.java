@@ -1,10 +1,13 @@
 package com.colargtech.countonme.ui.model;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import com.colargtech.adapters.ViewType;
 import com.colargtech.countonme.model.Period;
+import com.colargtech.countonme.ui.adapter.AdapterConstants;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -13,8 +16,8 @@ import java.util.Map;
 /**
  * @author gdfesta
  */
-public class ActionUI implements Parcelable {
-    public static final String KEY = "ACTION_KEY";
+public class ActionUI implements Parcelable, ViewType {
+    private final String id;
     private final String name;
     private final Period period;
     private final int incrementBy;
@@ -22,14 +25,16 @@ public class ActionUI implements Parcelable {
     private int maxPerPeriod;
 
     protected ActionUI(Builder builder) {
+        id = builder.id;
         name = builder.name;
         period = builder.period;
         incrementBy = builder.incrementBy;
         maxPerPeriod = builder.maxPerPeriod;
-        countsByDate = new HashMap<>();
+        countsByDate = builder.countsByDate;
     }
 
     protected ActionUI(Parcel in) {
+        id = in.readString();
         name = in.readString();
         incrementBy = in.readInt();
         maxPerPeriod = in.readInt();
@@ -66,7 +71,7 @@ public class ActionUI implements Parcelable {
     }
 
     public int getCountForDate(Date date) {
-        return this.countsByDate.get(date);
+        return this.countsByDate.values().size();
     }
 
     @Override
@@ -81,21 +86,55 @@ public class ActionUI implements Parcelable {
         parcel.writeInt(maxPerPeriod);
     }
 
+    @Override
+    public int getViewType() {
+        return AdapterConstants.ACTION;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ActionUI actionUI = (ActionUI) o;
+
+        return id != null ? id.equals(actionUI.id) : actionUI.id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
     public static final class Builder {
+        private final String id;
         private final String name;
         private final Period period;
         private final int incrementBy;
         private int maxPerPeriod;
+        private Map<Date, Integer> countsByDate;
 
-        public Builder(@NonNull String name, @NonNull Period period, int incrementBy) {
+        public Builder(@NonNull String id, @NonNull String name, @NonNull Period period, int incrementBy) {
+            this.id = id;
             this.name = name;
             this.period = period;
             this.incrementBy = incrementBy;
+            this.countsByDate = new HashMap<>();
         }
 
         @NonNull
         public Builder withMaxPerPeriod(int val) {
             maxPerPeriod = val;
+            return this;
+        }
+
+        public Builder withCountForDate(Map<Date, Integer> countsByDate) {
+            this.countsByDate = countsByDate;
             return this;
         }
 

@@ -9,6 +9,7 @@ import com.colargtech.rx_realm.ActionWithRealm;
 import com.colargtech.rx_realm.RealmObservableUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -17,6 +18,7 @@ import javax.inject.Singleton;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import rx.Observable;
 import rx.functions.Action1;
@@ -30,14 +32,16 @@ import rx.subjects.Subject;
 public class CountOnMeDBManager {
     private final RealmConfiguration configuration;
     private final Subject<Group, Group> groupCreateSubject;
+    private final Subject<Action, Action> actionCreatedSubject;
     private final Subject<Action, Action> actionUpdateSubject;
 
     @Inject
     public CountOnMeDBManager(RealmConfiguration configuration, @Named("GroupCreate") Subject<Group, Group> groupCreateSubject,
-                              @Named("ActionUpdate") Subject<Action, Action> actionSub) {
+                              @Named("ActionCreate") Subject<Action, Action> actionCreatedSubject, @Named("ActionUpdate") Subject<Action, Action> actionUpdateSubject) {
         this.configuration = configuration;
         this.groupCreateSubject = groupCreateSubject;
-        this.actionUpdateSubject = actionSub;
+        this.actionUpdateSubject = actionUpdateSubject;
+        this.actionCreatedSubject = actionCreatedSubject;
     }
 
     public Observable<Group> getAllGroups() {
@@ -56,6 +60,38 @@ public class CountOnMeDBManager {
                 });
     }
 
+    public Observable<Action> getAllActions(final String groupID) {
+        return RealmObservableUtils
+                .createRealObjectObservableFromRealmResultsWithRealm(new ActionWithRealm<RealmResults<ActionDB>>() {
+                    @Override
+                    public RealmResults<ActionDB> call(Realm realm) {
+                        return realm.where(GroupDB.class).equalTo("id", groupID).findFirst().getActions().sort("name");
+                    }
+                }, this.configuration)
+                .map(new Func1<ActionDB, Action>() {
+                    @Override
+                    public Action call(ActionDB actionDB) {
+                        return actionDB.toAction();
+                    }
+                });
+    }
+
+    public Observable<Action> getAction(final String actionID) {
+        return RealmObservableUtils
+                .createObservableWithRealm(new ActionWithRealm<ActionDB>() {
+                    @Override
+                    public ActionDB call(Realm realm) {
+                        return realm.where(ActionDB.class).equalTo("id", actionID).findFirst();
+                    }
+                }, this.configuration)
+                .map(new Func1<ActionDB, Action>() {
+                    @Override
+                    public Action call(ActionDB actionDB) {
+                        return actionDB.toAction();
+                    }
+                });
+    }
+
     public void createGroup(final String name) {
         RealmObservableUtils
                 .createObservableWithinRealmTransaction(new ActionWithRealm<GroupDB>() {
@@ -64,6 +100,7 @@ public class CountOnMeDBManager {
                         GroupDB groupDB = new GroupDB();
                         groupDB.setId(UUID.randomUUID().toString());
                         groupDB.setName(name);
+                        groupDB.setActions(new RealmList<ActionDB>());
                         realm.copyToRealmOrUpdate(groupDB);
                         return groupDB;
                     }
@@ -78,6 +115,34 @@ public class CountOnMeDBManager {
                     @Override
                     public void call(Group group) {
                         groupCreateSubject.onNext(group);
+                    }
+                });
+    }
+
+    public void createAction(final String groupId, final String name) {
+        RealmObservableUtils
+                .createObservableWithinRealmTransaction(new ActionWithRealm<ActionDB>() {
+                    @Override
+                    public ActionDB call(Realm realm) {
+                        GroupDB groupDB = realm.where(GroupDB.class).equalTo("id", groupId).findFirst();
+                        ActionDB actionDB = new ActionDB();
+                        actionDB.setId(UUID.randomUUID().toString());
+                        actionDB.setName(name);
+                        groupDB.addAction(actionDB);
+                        realm.copyToRealmOrUpdate(groupDB);
+                        return actionDB;
+                    }
+                }, this.configuration)
+                .map(new Func1<ActionDB, Action>() {
+                    @Override
+                    public Action call(ActionDB groupDB) {
+                        return groupDB.toAction();
+                    }
+                })
+                .subscribe(new Action1<Action>() {
+                    @Override
+                    public void call(Action action) {
+                        actionCreatedSubject.onNext(action);
                     }
                 });
     }
@@ -110,5 +175,44 @@ public class CountOnMeDBManager {
                         actionUpdateSubject.onNext(action);
                     }
                 });
+    }
+
+    public void addCustom(final String actionId, final Date date) {
+        RealmObservableUtils
+                .createObservableWithinRealmTransaction(new ActionWithRealm<ActionDB>() {
+                    @Override
+                    public ActionDB call(Realm realm) {
+                        ActionDB actionDB = realm.where(ActionDB.class).equalTo("id", actionId).findFirst();
+                        long counts = actionDB.getIncrementBy();
+                        for (long count = 0; count < counts; count++) {
+                            CountDB countDB = new CountDB();
+                            countDB.setId(UUID.randomUUID().toString());
+                            countDB.setDate(date);
+                            actionDB.getCounts().add(countDB);
+                        }
+                        realm.copyToRealmOrUpdate(actionDB);
+                        return actionDB;
+                    }
+                }, this.configuration)
+                .map(new Func1<ActionDB, Action>() {
+                    @Override
+                    public Action call(ActionDB actionDB) {
+                        return actionDB.toAction();
+                    }
+                })
+                .subscribe(new Action1<Action>() {
+                    @Override
+                    public void call(Action action) {
+                        actionUpdateSubject.onNext(action);
+                    }
+                });
+    }
+
+    public void removeCounts(final String actionId, final Date date, final long counts) {
+        //TODO
+    }
+
+    public void decreaseCustom(String actionId, Date date) {
+        //TODO
     }
 }

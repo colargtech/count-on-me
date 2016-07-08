@@ -1,11 +1,17 @@
 package com.colargtech.countonme.database.model;
 
 import com.colargtech.countonme.model.Action;
+import com.colargtech.countonme.model.Period;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
+import rx.Observable;
 
 /**
  * @author gdfesta
@@ -20,9 +26,12 @@ public class ActionDB extends RealmObject {
 
     private RealmList<CountDB> counts;
 
+    private int incrementBy;
+
     private int maxPerPeriod;
 
     public ActionDB() {
+        counts = new RealmList<>();
     }
 
     public String getName() {
@@ -57,7 +66,21 @@ public class ActionDB extends RealmObject {
         this.maxPerPeriod = maxPerPeriod;
     }
 
+    public int getIncrementBy() {
+        return incrementBy;
+    }
+
+    public void setIncrementBy(int incrementBy) {
+        this.incrementBy = incrementBy;
+    }
+
     public Action toAction() {
-        return null;
+        Action.Builder builder = new Action.Builder(id, name, Period.DAY, incrementBy);
+        Map<Date, Integer> map = new HashMap<>();
+        for (CountDB count : counts) {
+            map.put(count.getDate(), 1);
+        }
+        builder.withCountForDate(map);
+        return builder.build();
     }
 }

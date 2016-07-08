@@ -27,6 +27,13 @@ public class CountOnMeDatabaseModule {
 
     @Provides
     @Singleton
+    @Named("ActionCreate")
+    public Subject<Action, Action> provideActionCreate() {
+        return BehaviorSubject.create();
+    }
+
+    @Provides
+    @Singleton
     @Named("ActionUpdate")
     public Subject<Action, Action> provideActionUpdate() {
         return BehaviorSubject.create();
