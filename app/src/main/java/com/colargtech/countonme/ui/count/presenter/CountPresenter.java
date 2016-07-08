@@ -72,8 +72,14 @@ public class CountPresenter extends MvpRxBasePresenter<CountView> {
     }
 
     private Subscription subscribe(Observable<Action> observable) {
-        return observable.map(
-                new Func1<Action, ActionUI>() {
+        return observable
+                .filter(new Func1<Action, Boolean>() {
+                    @Override
+                    public Boolean call(Action action) {
+                        return action.id.equals(actionId);
+                    }
+                })
+                .map(new Func1<Action, ActionUI>() {
                     @Override
                     public ActionUI call(Action action) {
                         ActionUI.Builder builder = new ActionUI.Builder(action.id, action.name, action.period, action.incrementBy);
@@ -87,7 +93,7 @@ public class CountPresenter extends MvpRxBasePresenter<CountView> {
                 .subscribe(new Action1<ActionUI>() {
                     @Override
                     public void call(ActionUI actionUI) {
-                        if (isViewAttached() && actionId.equals(actionUI.getId())) {
+                        if (isViewAttached()) {
                             getView().updateView(actionUI);
                         }
                     }
