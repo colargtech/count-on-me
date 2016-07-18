@@ -45,7 +45,6 @@ public class CountPresenter extends MvpRxBasePresenter<CountView> {
     @Override
     public void onResume() {
         super.onResume();
-        //TODO fix this because we are receiving again while resubscribe
         addSubscription(subscribe(actionUpdateSubject));
     }
 

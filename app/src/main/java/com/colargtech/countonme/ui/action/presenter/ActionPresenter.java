@@ -45,7 +45,6 @@ public class ActionPresenter extends MvpRxBasePresenter<ActionView> {
     @Override
     public void onResume() {
         super.onResume();
-        //TODO fix this because we are receiving again while resubscribe
         addSubscription(subscribe(actionCreateSubject));
         addSubscription(subscribeUpdate(actionUpdateSubject));
     }

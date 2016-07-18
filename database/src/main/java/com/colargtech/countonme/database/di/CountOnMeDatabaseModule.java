@@ -8,8 +8,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.ReplaySubject;
+import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 
 /**
@@ -22,20 +21,20 @@ public class CountOnMeDatabaseModule {
     @Singleton
     @Named("GroupCreate")
     public Subject<Group, Group> provideGroupCreateSubject() {
-        return BehaviorSubject.create();
+        return PublishSubject.create();
     }
 
     @Provides
     @Singleton
     @Named("ActionCreate")
     public Subject<Action, Action> provideActionCreate() {
-        return BehaviorSubject.create();
+        return PublishSubject.create();
     }
 
     @Provides
     @Singleton
     @Named("ActionUpdate")
     public Subject<Action, Action> provideActionUpdate() {
-        return BehaviorSubject.create();
+        return PublishSubject.create();
     }
 }

@@ -44,7 +44,6 @@ public class HomePresenter extends MvpRxBasePresenter<HomeView> {
     @Override
     public void onResume() {
         super.onResume();
-        //TODO fix this because we are receiving again while resubscribe
         addSubscription(subscribe(groupCreateSubject));
     }
 
