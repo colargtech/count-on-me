@@ -12,12 +12,25 @@ import com.colargtech.countonme.commons.mvp.UICallbacks;
  */
 
 public abstract class BaseFragment extends Fragment {
+
+    protected interface BaseActions {
+        void setScreenTitle(int resTitle);
+
+        void setScreenTitle(String title);
+    }
+
+    protected BaseActions baseActions;
     private UICallbacks callbacks;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         injectDependencies();
+        try {
+            baseActions = (BaseActions) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString() + " must implement BaseActions");
+        }
     }
 
     @Override

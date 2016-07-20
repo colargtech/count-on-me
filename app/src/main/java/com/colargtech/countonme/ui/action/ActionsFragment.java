@@ -117,4 +117,9 @@ public class ActionsFragment extends BaseFragment implements ActionDelegateAdapt
     public void updateActionUI(ActionUI actionUI) {
         adapter.updateActionUI(actionUI);
     }
+
+    @Override
+    public void setTitle(String title) {
+        baseActions.setScreenTitle(title);
+    }
 }

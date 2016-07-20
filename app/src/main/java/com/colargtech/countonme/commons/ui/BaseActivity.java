@@ -12,7 +12,7 @@ import com.colargtech.countonme.R;
  * @author juancho.
  */
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements BaseFragment.BaseActions {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,5 +55,19 @@ public class BaseActivity extends AppCompatActivity {
         } else {
             finish();
         }
+    }
+
+    /***************************************************************
+     * BaseFragment.BaseActions
+     */
+
+    @Override
+    public void setScreenTitle(int resTitle) {
+        setTitle(resTitle);
+    }
+
+    @Override
+    public void setScreenTitle(String title) {
+        setTitle(title);
     }
 }

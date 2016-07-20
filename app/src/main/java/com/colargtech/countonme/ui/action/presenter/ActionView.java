@@ -15,4 +15,6 @@ public interface ActionView extends MvpView {
     String getGroupID();
 
     void updateActionUI(ActionUI actionUI);
+
+    void setTitle(String title);
 }

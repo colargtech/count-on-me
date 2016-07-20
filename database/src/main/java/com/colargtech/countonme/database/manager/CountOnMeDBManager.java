@@ -9,7 +9,6 @@ import com.colargtech.rx_realm.ActionWithRealm;
 import com.colargtech.rx_realm.RealmObservableUtils;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -34,6 +33,7 @@ public class CountOnMeDBManager {
     private final Subject<Group, Group> groupCreateSubject;
     private final Subject<Action, Action> actionCreatedSubject;
     private final Subject<Action, Action> actionUpdateSubject;
+    private final String _id = "id";
 
     @Inject
     public CountOnMeDBManager(RealmConfiguration configuration, @Named("GroupCreate") Subject<Group, Group> groupCreateSubject,
@@ -65,7 +65,7 @@ public class CountOnMeDBManager {
                 .createRealObjectObservableFromRealmResultsWithRealm(new ActionWithRealm<RealmResults<ActionDB>>() {
                     @Override
                     public RealmResults<ActionDB> call(Realm realm) {
-                        return realm.where(GroupDB.class).equalTo("id", groupID).findFirst().getActions().sort("name");
+                        return realm.where(GroupDB.class).equalTo(_id, groupID).findFirst().getActions().sort("name");
                     }
                 }, this.configuration)
                 .map(new Func1<ActionDB, Action>() {
@@ -76,12 +76,28 @@ public class CountOnMeDBManager {
                 });
     }
 
+    public Observable<Group> getGroup(final String groupID) {
+        return RealmObservableUtils
+                .createObservableWithRealm(new ActionWithRealm<GroupDB>() {
+                    @Override
+                    public GroupDB call(Realm realm) {
+                        return realm.where(GroupDB.class).equalTo(_id, groupID).findFirst();
+                    }
+                }, this.configuration)
+                .map(new Func1<GroupDB, Group>() {
+                    @Override
+                    public Group call(GroupDB groupDB) {
+                        return groupDB.toGroup();
+                    }
+                });
+    }
+
     public Observable<Action> getAction(final String actionID) {
         return RealmObservableUtils
                 .createObservableWithRealm(new ActionWithRealm<ActionDB>() {
                     @Override
                     public ActionDB call(Realm realm) {
-                        return realm.where(ActionDB.class).equalTo("id", actionID).findFirst();
+                        return realm.where(ActionDB.class).equalTo(_id, actionID).findFirst();
                     }
                 }, this.configuration)
                 .map(new Func1<ActionDB, Action>() {
@@ -124,7 +140,7 @@ public class CountOnMeDBManager {
                 .createObservableWithinRealmTransaction(new ActionWithRealm<ActionDB>() {
                     @Override
                     public ActionDB call(Realm realm) {
-                        GroupDB groupDB = realm.where(GroupDB.class).equalTo("id", groupId).findFirst();
+                        GroupDB groupDB = realm.where(GroupDB.class).equalTo(_id, groupId).findFirst();
                         ActionDB actionDB = new ActionDB();
                         actionDB.setId(UUID.randomUUID().toString());
                         actionDB.setName(name);
@@ -152,7 +168,7 @@ public class CountOnMeDBManager {
                 .createObservableWithinRealmTransaction(new ActionWithRealm<ActionDB>() {
                     @Override
                     public ActionDB call(Realm realm) {
-                        ActionDB actionDB = realm.where(ActionDB.class).equalTo("id", actionId).findFirst();
+                        ActionDB actionDB = realm.where(ActionDB.class).equalTo(_id, actionId).findFirst();
                         for (long count = 0; count < counts; count++) {
                             CountDB countDB = new CountDB();
                             countDB.setId(UUID.randomUUID().toString());
@@ -182,7 +198,7 @@ public class CountOnMeDBManager {
                 .createObservableWithinRealmTransaction(new ActionWithRealm<ActionDB>() {
                     @Override
                     public ActionDB call(Realm realm) {
-                        ActionDB actionDB = realm.where(ActionDB.class).equalTo("id", actionId).findFirst();
+                        ActionDB actionDB = realm.where(ActionDB.class).equalTo(_id, actionId).findFirst();
                         long counts = actionDB.getIncrementBy();
                         for (long count = 0; count < counts; count++) {
                             CountDB countDB = new CountDB();

@@ -3,6 +3,7 @@ package com.colargtech.countonme.ui.action.presenter;
 import com.colargtech.countonme.commons.rx.MvpRxBasePresenter;
 import com.colargtech.countonme.database.manager.CountOnMeDBManager;
 import com.colargtech.countonme.model.Action;
+import com.colargtech.countonme.model.Group;
 import com.colargtech.countonme.ui.model.ActionUI;
 
 import javax.inject.Inject;
@@ -40,6 +41,24 @@ public class ActionPresenter extends MvpRxBasePresenter<ActionView> {
     public void onCreate(ActionView view) {
         super.onCreate(view);
         addSubscription(subscribe(countOnMeDBManager.getAllActions(view.getGroupID())));
+        countOnMeDBManager
+                .getGroup(view.getGroupID())
+                .map(new Func1<Group, String>() {
+                    @Override
+                    public String call(Group group) {
+                        return group.name;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String groupName) {
+                        if (isViewAttached()) {
+                            getView().setTitle(groupName);
+                        }
+                    }
+                });
     }
 
     @Override
