@@ -2,13 +2,16 @@ package com.colargtech.countonme.ui.action.presenter;
 
 import com.colargtech.countonme.commons.mvp.MvpView;
 import com.colargtech.countonme.ui.model.ActionUI;
-import com.colargtech.countonme.ui.model.GroupUI;
 
 /**
  * @author juancho.
  */
 
-public interface ActionView extends MvpView {
+public interface ActionsView extends MvpView {
 
-    void updateActionUI(ActionUI actionUI);
+    void addActionUI(ActionUI actionUI);
+
+    String getGroupID();
+
+    void setTitle(String title);
 }

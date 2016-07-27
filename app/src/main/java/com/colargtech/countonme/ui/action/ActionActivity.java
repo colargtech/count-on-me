@@ -31,6 +31,6 @@ public class ActionActivity extends BaseActivity implements ActionsFragment.Acti
 
     @Override
     public void showActionDetail(ActionUI actionUI) {
-        changeFragment(CountFragment.newInstance(actionUI.getId()));
+        changeFragment(CountFragment.newInstance(actionUI));
     }
 }

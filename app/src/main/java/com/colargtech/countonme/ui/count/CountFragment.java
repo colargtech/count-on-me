@@ -10,34 +10,41 @@ import android.widget.TextView;
 import com.colargtech.countonme.CountOnMeApp;
 import com.colargtech.countonme.R;
 import com.colargtech.countonme.commons.ui.BaseFragment;
-import com.colargtech.countonme.model.Action;
+import com.colargtech.countonme.model.ActionCount;
+import com.colargtech.countonme.model.Range;
+import com.colargtech.countonme.ui.action.presenter.ActionPresenter;
+import com.colargtech.countonme.ui.action.presenter.ActionView;
 import com.colargtech.countonme.ui.count.presenter.CountPresenter;
 import com.colargtech.countonme.ui.count.presenter.CountView;
 import com.colargtech.countonme.ui.model.ActionUI;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import rx.subjects.Subject;
 
 /**
  * @author gdfesta
  */
 
-public class CountFragment extends BaseFragment implements CountView {
+public class CountFragment extends BaseFragment implements CountView, ActionView {
     private static final String ACTION_ID_KEY = "ACTION_ID_KEY";
 
-    private String actionId;
+    private ActionUI actionUI;
 
     @Inject
-    CountPresenter presenter;
+    CountPresenter countPresenter;
 
-    public static CountFragment newInstance(String actionId) {
+    @Inject
+    ActionPresenter actionPresenter;
+
+    public static CountFragment newInstance(ActionUI actionUI) {
         Bundle args = new Bundle();
         CountFragment fragment = new CountFragment();
-        args.putString(ACTION_ID_KEY, actionId);
+        args.putParcelable(ACTION_ID_KEY, actionUI);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,9 +52,11 @@ public class CountFragment extends BaseFragment implements CountView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        actionId = getArguments().getString(ACTION_ID_KEY);
-        presenter.onCreate(this);
-        attachCallbacks(presenter);
+        actionUI = getArguments().getParcelable(ACTION_ID_KEY);
+        countPresenter.onCreate(this);
+        actionPresenter.onCreate(this);
+        attachCallbacks(actionPresenter);
+        attachCallbacks(countPresenter);
     }
 
     @Override
@@ -65,43 +74,59 @@ public class CountFragment extends BaseFragment implements CountView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        updateActionUI(actionUI);
         view.findViewById(R.id.btn_increase_one).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.increaseOne();
+                countPresenter.increaseOne();
             }
         });
 
         view.findViewById(R.id.btn_increase_custom).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.increaseCustom();
+                countPresenter.increaseCustom();
             }
         });
 
         view.findViewById(R.id.btn_decrease_one).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.decreaseOne();
+                countPresenter.decreaseOne();
             }
         });
 
         view.findViewById(R.id.btn_decrease_custom).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.decreaseCustom();
+                countPresenter.decreaseCustom();
             }
         });
     }
 
     @Override
-    public void updateView(ActionUI actionUI) {
-        ((TextView) getView().findViewById(R.id.action_title)).setText(actionUI.getName());
-        ((TextView) getView().findViewById(R.id.count_for_date)).setText(Integer.toString(actionUI.getCountForDate(new Date())));
+    public void updateActionCount(ActionCount actionCount) {
+        ((TextView) getView().findViewById(R.id.count_for_date)).setText(Long.toString(actionCount.count));
+    }
+
+    public String getActionUI() {
+        return actionUI.getId();
     }
 
     @Override
-    public String getActionId() {
-        return actionId;
+    public List<Range> getRanges() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+        ArrayList<Range> ranges = new ArrayList<>();
+        try {
+            ranges.add(new Range(format.parse("2015/01/01"), format.parse("2017/01/01")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return ranges;
+    }
+
+    @Override
+    public void updateActionUI(ActionUI actionUI) {
+        ((TextView) getView().findViewById(R.id.action_title)).setText(actionUI.getName());
     }
 }

@@ -19,69 +19,21 @@ import rx.schedulers.Schedulers;
 import rx.subjects.Subject;
 
 /**
- * @author juancho.
+ * @author gdfesta.
  */
-@Singleton
 public class ActionPresenter extends MvpRxBasePresenter<ActionView> {
 
-    private final CountOnMeDBManager countOnMeDBManager;
-    private final Subject<Action, Action> actionCreateSubject;
     private final Subject<Action, Action> actionUpdateSubject;
 
-
     @Inject
-    public ActionPresenter(CountOnMeDBManager countOnMeDBManager, @Named("ActionCreate") Subject<Action, Action> actionCreateSubject,
-                           @Named("ActionUpdate") Subject<Action, Action> actionUpdateSubject) {
-        this.countOnMeDBManager = countOnMeDBManager;
-        this.actionCreateSubject = actionCreateSubject;
+    public ActionPresenter(@Named("ActionUpdate") Subject<Action, Action> actionUpdateSubject) {
         this.actionUpdateSubject = actionUpdateSubject;
-    }
-
-    @Override
-    public void onCreate(ActionView view) {
-        super.onCreate(view);
-        addSubscription(subscribe(countOnMeDBManager.getAllActions(view.getGroupID())));
-        countOnMeDBManager
-                .getGroup(view.getGroupID())
-                .map(new Func1<Group, String>() {
-                    @Override
-                    public String call(Group group) {
-                        return group.name;
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String groupName) {
-                        if (isViewAttached()) {
-                            getView().setTitle(groupName);
-                        }
-                    }
-                });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        addSubscription(subscribe(actionCreateSubject));
         addSubscription(subscribeUpdate(actionUpdateSubject));
-    }
-
-    public void createAction(String groupId, String name) {
-        countOnMeDBManager.createAction(groupId, name);
-    }
-
-    private Subscription subscribe(Observable<Action> observable) {
-        return fromActionToActionUI(observable)
-                .subscribe(new Action1<ActionUI>() {
-                    @Override
-                    public void call(ActionUI groupUI) {
-                        if (isViewAttached()) {
-                            getView().addActionUI(groupUI);
-                        }
-                    }
-                });
     }
 
     private Subscription subscribeUpdate(Observable<Action> actionSub) {
@@ -102,7 +54,6 @@ public class ActionPresenter extends MvpRxBasePresenter<ActionView> {
                     @Override
                     public ActionUI call(Action action) {
                         ActionUI.Builder builder = new ActionUI.Builder(action.id, action.name, action.period, action.incrementBy);
-                        builder.withCountForDate(action.countsByDate);
                         return builder.build();
                     }
                 })

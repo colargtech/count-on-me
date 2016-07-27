@@ -1,7 +1,11 @@
 package com.colargtech.countonme.ui.count.presenter;
 
 import com.colargtech.countonme.commons.mvp.MvpView;
+import com.colargtech.countonme.model.ActionCount;
+import com.colargtech.countonme.model.Range;
 import com.colargtech.countonme.ui.model.ActionUI;
+
+import java.util.List;
 
 /**
  * @author juancho.
@@ -9,8 +13,9 @@ import com.colargtech.countonme.ui.model.ActionUI;
 
 public interface CountView extends MvpView {
 
-    void updateView(ActionUI actionUI);
+    void updateActionCount(ActionCount actionUI);
 
-    String getActionId();
+    String getActionUI();
 
+    List<Range> getRanges();
 }

@@ -76,11 +76,6 @@ public class ActionDB extends RealmObject {
 
     public Action toAction() {
         Action.Builder builder = new Action.Builder(id, name, Period.DAY, incrementBy);
-        Map<Date, Integer> map = new HashMap<>();
-        for (CountDB count : counts) {
-            map.put(count.getDate(), 1);
-        }
-        builder.withCountForDate(map);
         return builder.build();
     }
 }

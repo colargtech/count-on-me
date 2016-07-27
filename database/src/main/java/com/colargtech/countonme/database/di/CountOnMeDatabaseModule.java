@@ -1,6 +1,8 @@
 package com.colargtech.countonme.database.di;
 
+import com.colargtech.countonme.database.model.ActionDB;
 import com.colargtech.countonme.model.Action;
+import com.colargtech.countonme.model.ActionCount;
 import com.colargtech.countonme.model.Group;
 
 import javax.inject.Named;
@@ -35,6 +37,13 @@ public class CountOnMeDatabaseModule {
     @Singleton
     @Named("ActionUpdate")
     public Subject<Action, Action> provideActionUpdate() {
+        return PublishSubject.create();
+    }
+
+    @Provides
+    @Singleton
+    @Named("ActionDBUpdate")
+    public Subject<ActionDB, ActionDB> provideCountUpdate() {
         return PublishSubject.create();
     }
 }

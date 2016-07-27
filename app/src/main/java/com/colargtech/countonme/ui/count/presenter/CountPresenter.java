@@ -2,22 +2,19 @@ package com.colargtech.countonme.ui.count.presenter;
 
 import com.colargtech.countonme.commons.rx.MvpRxBasePresenter;
 import com.colargtech.countonme.database.manager.CountOnMeDBManager;
-import com.colargtech.countonme.model.Action;
-import com.colargtech.countonme.ui.model.ActionUI;
+import com.colargtech.countonme.model.ActionCount;
+import com.colargtech.countonme.model.Range;
 
 import java.util.Date;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subjects.Subject;
 
 /**
  * @author juancho.
@@ -26,74 +23,62 @@ import rx.subjects.Subject;
 public class CountPresenter extends MvpRxBasePresenter<CountView> {
 
     private final CountOnMeDBManager countOnMeDBManager;
-    private final Subject<Action, Action> actionUpdateSubject;
-    private String actionId;
 
     @Inject
-    public CountPresenter(CountOnMeDBManager countOnMeDBManager, @Named("ActionUpdate") Subject<Action, Action> actionUpdateSubject) {
+    public CountPresenter(CountOnMeDBManager countOnMeDBManager) {
         this.countOnMeDBManager = countOnMeDBManager;
-        this.actionUpdateSubject = actionUpdateSubject;
     }
 
     @Override
     public void onCreate(CountView view) {
         super.onCreate(view);
-        this.actionId = view.getActionId();
-        addSubscription(subscribe(countOnMeDBManager.getAction(actionId)));
+        for (Range range : getView().getRanges()) {
+            addSubscription(subscribeCount(countOnMeDBManager.getCountForAction(view.getActionUI(), range)));
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        addSubscription(subscribe(actionUpdateSubject));
-    }
-
-    @Override
-    public void detachView(boolean retainInstance) {
-        super.detachView(retainInstance);
-        this.actionId = null;
+        for (Range range : getView().getRanges()) {
+            addSubscription(subscribeCount(countOnMeDBManager.subscribeUpdateOnActionCount(getView().getActionUI(), range)));
+        }
     }
 
     public void increaseOne() {
-        countOnMeDBManager.addCount(actionId, new Date(), 1L);
+        if (isViewAttached()) {
+            countOnMeDBManager.addCount(getView().getActionUI(), new Date(), 1L);
+        }
     }
 
     public void increaseCustom() {
-        countOnMeDBManager.addCustom(actionId, new Date());
+        if (isViewAttached()) {
+            countOnMeDBManager.addCustom(getView().getActionUI(), new Date());
+        }
     }
 
     public void decreaseOne() {
-        countOnMeDBManager.removeCounts(actionId, new Date(), 1L);
+        if (isViewAttached()) {
+            countOnMeDBManager.removeCounts(getView().getActionUI(), new Date(), 1L);
+        }
     }
 
     public void decreaseCustom() {
-        countOnMeDBManager.decreaseCustom(actionId, new Date());
+        if (isViewAttached()) {
+            countOnMeDBManager.decreaseCustom(getView().getActionUI(), new Date());
+        }
     }
 
-    private Subscription subscribe(Observable<Action> observable) {
+    private Subscription subscribeCount(Observable<ActionCount> observable) {
         return observable
-                .filter(new Func1<Action, Boolean>() {
-                    @Override
-                    public Boolean call(Action action) {
-                        return action.id.equals(actionId);
-                    }
-                })
-                .map(new Func1<Action, ActionUI>() {
-                    @Override
-                    public ActionUI call(Action action) {
-                        ActionUI.Builder builder = new ActionUI.Builder(action.id, action.name, action.period, action.incrementBy);
-                        builder.withCountForDate(action.countsByDate);
-                        return builder.build();
-                    }
-                })
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ActionUI>() {
+                .subscribe(new Action1<ActionCount>() {
                     @Override
-                    public void call(ActionUI actionUI) {
+                    public void call(ActionCount actionCount) {
                         if (isViewAttached()) {
-                            getView().updateView(actionUI);
+                            getView().updateActionCount(actionCount);
                         }
                     }
                 });

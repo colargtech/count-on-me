@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 
 import com.colargtech.countonme.commons.mvp.UICallbacks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author juancho.
  */
@@ -20,11 +23,12 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected BaseActions baseActions;
-    private UICallbacks callbacks;
+    private List<UICallbacks> callbacks;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.callbacks = new ArrayList<>();
         injectDependencies();
         try {
             baseActions = (BaseActions) getActivity();
@@ -36,17 +40,23 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (callbacks != null) {
-            this.callbacks.onResume();
+        for (UICallbacks callback : this.callbacks) {
+            callback.onResume();
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (callbacks != null) {
-            this.callbacks.onPause();
+        for (UICallbacks callback : this.callbacks) {
+            callback.onPause();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.callbacks = null;
     }
 
     @CallSuper
@@ -54,6 +64,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void attachCallbacks(UICallbacks callbacks) {
-        this.callbacks = callbacks;
+        this.callbacks.add(callbacks);
     }
 }

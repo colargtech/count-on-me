@@ -16,6 +16,8 @@ import com.colargtech.countonme.ui.action.adapter.ActionDelegateAdapter;
 import com.colargtech.countonme.ui.action.adapter.ActionsAdapter;
 import com.colargtech.countonme.ui.action.presenter.ActionPresenter;
 import com.colargtech.countonme.ui.action.presenter.ActionView;
+import com.colargtech.countonme.ui.action.presenter.ActionsPresenter;
+import com.colargtech.countonme.ui.action.presenter.ActionsView;
 import com.colargtech.countonme.ui.model.ActionUI;
 
 import java.util.UUID;
@@ -26,7 +28,7 @@ import javax.inject.Inject;
  * @author gdfesta
  */
 
-public class ActionsFragment extends BaseFragment implements ActionDelegateAdapter.ActionAdapterActions, ActionView {
+public class ActionsFragment extends BaseFragment implements ActionDelegateAdapter.ActionAdapterActions, ActionView, ActionsView {
 
     interface ActionsNavigation {
         void showActionDetail(ActionUI actionUI);
@@ -49,13 +51,18 @@ public class ActionsFragment extends BaseFragment implements ActionDelegateAdapt
     @Inject
     ActionPresenter actionPresenter;
 
+    @Inject
+    ActionsPresenter actionsPresenter;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         groupID = getArguments().getString(GROUP_KEY);
         adapter = new ActionsAdapter(this);
         actionPresenter.onCreate(this);
+        actionsPresenter.onCreate(this);
         attachCallbacks(actionPresenter);
+        attachCallbacks(actionsPresenter);
     }
 
 
@@ -81,7 +88,7 @@ public class ActionsFragment extends BaseFragment implements ActionDelegateAdapt
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        actionPresenter.createAction(groupID, UUID.randomUUID().toString());
+                        actionsPresenter.createAction(groupID, UUID.randomUUID().toString());
                     }
                 });
     }
