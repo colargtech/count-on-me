@@ -2,7 +2,6 @@ package com.colargtech.countonme.database.di;
 
 import com.colargtech.countonme.database.model.ActionDB;
 import com.colargtech.countonme.model.Action;
-import com.colargtech.countonme.model.ActionCount;
 import com.colargtech.countonme.model.Group;
 
 import javax.inject.Named;

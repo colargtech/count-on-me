@@ -2,10 +2,8 @@ package com.colargtech.countonme.ui.home.presenter;
 
 import com.colargtech.countonme.commons.rx.MvpRxBasePresenter;
 import com.colargtech.countonme.database.manager.CountOnMeDBManager;
-import com.colargtech.countonme.model.Action;
 import com.colargtech.countonme.model.Group;
 import com.colargtech.countonme.ui.home.view.HomeView;
-import com.colargtech.countonme.ui.model.ActionUI;
 import com.colargtech.countonme.ui.model.GroupUI;
 
 import javax.inject.Inject;
@@ -30,7 +28,8 @@ public class HomePresenter extends MvpRxBasePresenter<HomeView> {
     private final Subject<Group, Group> groupCreateSubject;
 
     @Inject
-    public HomePresenter(CountOnMeDBManager countOnMeDBManager, @Named("GroupCreate") Subject<Group, Group> groupCreateSubject) {
+    public HomePresenter(CountOnMeDBManager countOnMeDBManager,
+                         @Named("GroupCreate") Subject<Group, Group> groupCreateSubject) {
         this.countOnMeDBManager = countOnMeDBManager;
         this.groupCreateSubject = groupCreateSubject;
     }

@@ -23,10 +23,13 @@ import rx.subjects.Subject;
  */
 public class ActionPresenter extends MvpRxBasePresenter<ActionView> {
 
+    private final CountOnMeDBManager countOnMeDBManager;
     private final Subject<Action, Action> actionUpdateSubject;
 
     @Inject
-    public ActionPresenter(@Named("ActionUpdate") Subject<Action, Action> actionUpdateSubject) {
+    public ActionPresenter(CountOnMeDBManager countOnMeDBManager,
+            @Named("ActionUpdate") Subject<Action, Action> actionUpdateSubject) {
+        this.countOnMeDBManager = countOnMeDBManager;
         this.actionUpdateSubject = actionUpdateSubject;
     }
 
@@ -34,6 +37,10 @@ public class ActionPresenter extends MvpRxBasePresenter<ActionView> {
     public void onResume() {
         super.onResume();
         addSubscription(subscribeUpdate(actionUpdateSubject));
+    }
+
+    public Observable<Void> deleteGroup(String groupID) {
+        return this.countOnMeDBManager.deleteGroup(groupID);
     }
 
     private Subscription subscribeUpdate(Observable<Action> actionSub) {

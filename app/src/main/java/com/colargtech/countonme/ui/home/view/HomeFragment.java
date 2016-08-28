@@ -1,6 +1,7 @@
 package com.colargtech.countonme.ui.home.view;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import com.colargtech.countonme.CountOnMeApp;
 import com.colargtech.countonme.R;
 import com.colargtech.countonme.commons.ui.BaseFragment;
+import com.colargtech.countonme.ui.action.ActionActivity;
 import com.colargtech.countonme.ui.home.presenter.HomePresenter;
 import com.colargtech.countonme.ui.home.view.adapter.GroupDelegateAdapter;
 import com.colargtech.countonme.ui.home.view.adapter.GroupsAdapter;
@@ -88,6 +90,15 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
                     }
                 });
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ActionActivity.GROUP_REMOVED) {
+            String groupId = data.getStringExtra(ActionActivity.GROUP_REMOVED_ID);
+            adapter.removeGroup(groupId);
+        }
     }
 
     @Override

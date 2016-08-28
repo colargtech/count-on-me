@@ -24,7 +24,6 @@ import io.realm.RealmResults;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subjects.Subject;
 
 /**
@@ -40,7 +39,8 @@ public class CountOnMeDBManager {
     private final String _id = "id";
 
     @Inject
-    public CountOnMeDBManager(RealmConfiguration configuration, @Named("GroupCreate") Subject<Group, Group> groupCreateSubject,
+    public CountOnMeDBManager(RealmConfiguration configuration,
+                              @Named("GroupCreate") Subject<Group, Group> groupCreateSubject,
                               @Named("ActionCreate") Subject<Action, Action> actionCreatedSubject,
                               @Named("ActionUpdate") Subject<Action, Action> actionUpdateSubject,
                               @Named("ActionDBUpdate") Subject<ActionDB, ActionDB> actionDBUpdateSubject) {
@@ -124,6 +124,23 @@ public class CountOnMeDBManager {
                         groupCreateSubject.onNext(group);
                     }
                 });
+    }
+
+    public Observable<Void> deleteGroup(final String groupID) {
+        return RealmObservableUtils.createObservableWithinRealmTransaction(new ActionWithRealm<Void>() {
+            @Override
+            public Void call(Realm realm) {
+                GroupDB groupDB = realm.where(GroupDB.class).equalTo(_id, groupID).findFirst();
+
+                for (int i = groupDB.getActions().size() - 1; i >= 0; i--) {
+                    ActionDB actionDb = groupDB.getActions().get(i);
+                    actionDb.getCounts().deleteAllFromRealm();
+                    actionDb.deleteFromRealm();
+                }
+                groupDB.deleteFromRealm();
+                return null;
+            }
+        }, this.configuration);
     }
 
     public void createAction(final String groupId, final String name) {
