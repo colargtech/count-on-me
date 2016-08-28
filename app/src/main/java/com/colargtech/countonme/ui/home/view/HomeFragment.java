@@ -95,7 +95,7 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ActionActivity.GROUP_REMOVED) {
+        if (resultCode == ActionActivity.GROUP_REMOVED) {
             String groupId = data.getStringExtra(ActionActivity.GROUP_REMOVED_ID);
             adapter.removeGroup(groupId);
         }
