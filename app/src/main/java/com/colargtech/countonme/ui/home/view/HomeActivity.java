@@ -26,14 +26,4 @@ public class HomeActivity extends BaseActivity implements HomeFragment.HomeNavig
         // if we are on portrait:
         startActivityForResult(ActionActivity.newIntent(this, groupUI.getId()), ActionActivity.GROUP_REMOVED);
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Fragment homeFrag = getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
-        if (homeFrag != null) {
-            homeFrag.onActivityResult(requestCode, resultCode, data);
-        }
-    }
 }

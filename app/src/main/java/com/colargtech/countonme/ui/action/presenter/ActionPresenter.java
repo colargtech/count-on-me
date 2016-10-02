@@ -3,19 +3,15 @@ package com.colargtech.countonme.ui.action.presenter;
 import com.colargtech.countonme.commons.rx.MvpRxBasePresenter;
 import com.colargtech.countonme.database.manager.CountOnMeDBManager;
 import com.colargtech.countonme.model.Action;
-import com.colargtech.countonme.model.Group;
+import com.colargtech.countonme.ui.action.ActionsRxMapper;
 import com.colargtech.countonme.ui.model.ActionUI;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subjects.Subject;
 
 /**
@@ -28,7 +24,7 @@ public class ActionPresenter extends MvpRxBasePresenter<ActionView> {
 
     @Inject
     public ActionPresenter(CountOnMeDBManager countOnMeDBManager,
-            @Named("ActionUpdate") Subject<Action, Action> actionUpdateSubject) {
+                           @Named("ActionUpdate") Subject<Action, Action> actionUpdateSubject) {
         this.countOnMeDBManager = countOnMeDBManager;
         this.actionUpdateSubject = actionUpdateSubject;
     }
@@ -44,7 +40,7 @@ public class ActionPresenter extends MvpRxBasePresenter<ActionView> {
     }
 
     private Subscription subscribeUpdate(Observable<Action> actionSub) {
-        return fromActionToActionUI(actionSub)
+        return ActionsRxMapper.fromActionToActionUI(actionSub)
                 .subscribe(new Action1<ActionUI>() {
                     @Override
                     public void call(ActionUI actionUI) {
@@ -53,19 +49,5 @@ public class ActionPresenter extends MvpRxBasePresenter<ActionView> {
                         }
                     }
                 });
-    }
-
-    private Observable<ActionUI> fromActionToActionUI(Observable<Action> observable) {
-        return observable.map(
-                new Func1<Action, ActionUI>() {
-                    @Override
-                    public ActionUI call(Action action) {
-                        ActionUI.Builder builder = new ActionUI.Builder(action.id, action.name, action.period, action.incrementBy);
-                        return builder.build();
-                    }
-                })
-                .onBackpressureBuffer()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
     }
 }

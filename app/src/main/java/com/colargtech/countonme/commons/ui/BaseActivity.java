@@ -1,6 +1,8 @@
 package com.colargtech.countonme.commons.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -8,11 +10,15 @@ import android.support.v7.widget.Toolbar;
 
 import com.colargtech.countonme.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author juancho.
  */
+public abstract class BaseActivity extends AppCompatActivity implements BaseFragment.BaseActions {
 
-public class BaseActivity extends AppCompatActivity implements BaseFragment.BaseActions {
+    private final List<String> fragmentsActivityForResult = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +63,18 @@ public class BaseActivity extends AppCompatActivity implements BaseFragment.Base
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        for (String fragmentName : fragmentsActivityForResult) {
+            Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(fragmentName);
+            if (fragmentByTag != null) {
+                fragmentByTag.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+    }
+
     /***************************************************************
      * BaseFragment.BaseActions
      */
@@ -69,5 +87,10 @@ public class BaseActivity extends AppCompatActivity implements BaseFragment.Base
     @Override
     public void setScreenTitle(String title) {
         setTitle(title);
+    }
+
+    @Override
+    public void registerFragmentActivityForResult(BaseFragment fragment) {
+        fragmentsActivityForResult.add(fragment.getClass().getSimpleName());
     }
 }

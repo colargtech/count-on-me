@@ -16,7 +16,7 @@ import com.colargtech.countonme.CountOnMeApp;
 import com.colargtech.countonme.R;
 import com.colargtech.countonme.commons.ui.BaseFragment;
 import com.colargtech.countonme.ui.action.create_action.presenter.CreateActionPresenter;
-import com.colargtech.countonme.ui.model.PeriodUI;
+import com.colargtech.countonme.ui.model.PeriodModelUI;
 
 import java.util.List;
 
@@ -109,7 +109,7 @@ public class CreateActionFragment extends BaseFragment implements CreateActionVi
                 validateParams();
                 createActionPresenter.createAction(groupID,
                         actionName.getText().toString(),
-                        (PeriodUI) periodSpinner.getSelectedItem(),
+                        (PeriodModelUI) periodSpinner.getSelectedItem(),
                         (Integer) incrementBySpinner.getSelectedItem(),
                         (Integer) maxPerDaySpinner.getSelectedItem());
             }
@@ -127,7 +127,7 @@ public class CreateActionFragment extends BaseFragment implements CreateActionVi
     }
 
     @Override
-    public void setPeriodValues(List<PeriodUI> values) {
+    public void setPeriodValues(List<PeriodModelUI> values) {
         periodSpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, values));
     }
 

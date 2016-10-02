@@ -78,6 +78,8 @@ public class HomeFragment extends BaseFragment implements HomeView, GroupDelegat
             throw e;
         }
 
+        baseActions.registerFragmentActivityForResult(this);
+
         RecyclerView homeList = (RecyclerView) getView().findViewById(R.id.home_list);
         homeList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         homeList.setAdapter(adapter);

@@ -118,6 +118,8 @@ public class ActionsFragment extends BaseFragment implements ActionDelegateAdapt
             Log.d(this.getClass().getSimpleName(), "Unable to cast Activity to ActionsNavigation.");
             throw e;
         }
+
+        baseActions.registerFragmentActivityForResult(this);
     }
 
     /**

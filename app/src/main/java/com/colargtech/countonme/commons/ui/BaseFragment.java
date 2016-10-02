@@ -20,6 +20,8 @@ public abstract class BaseFragment extends Fragment {
         void setScreenTitle(int resTitle);
 
         void setScreenTitle(String title);
+
+        void registerFragmentActivityForResult(BaseFragment fragment);
     }
 
     protected BaseActions baseActions;

@@ -5,7 +5,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.colargtech.adapters.ViewType;
-import com.colargtech.countonme.model.Period;
 import com.colargtech.countonme.ui.adapter.AdapterConstants;
 
 /**
@@ -14,7 +13,7 @@ import com.colargtech.countonme.ui.adapter.AdapterConstants;
 public class ActionUI implements Parcelable, ViewType {
     private final String id;
     private final String name;
-    private final Period period;
+    private final PeriodUI period;
     private final int incrementBy;
     private int maxPerPeriod;
 
@@ -31,7 +30,7 @@ public class ActionUI implements Parcelable, ViewType {
         name = in.readString();
         incrementBy = in.readInt();
         maxPerPeriod = in.readInt();
-        period = Period.DAY;
+        period = PeriodUI.valueOf(in.readString());
     }
 
     public static final Creator<ActionUI> CREATOR = new Creator<ActionUI>() {
@@ -50,7 +49,7 @@ public class ActionUI implements Parcelable, ViewType {
         return name;
     }
 
-    public Period getPeriod() {
+    public PeriodUI getPeriod() {
         return period;
     }
 
@@ -72,6 +71,7 @@ public class ActionUI implements Parcelable, ViewType {
         parcel.writeString(name);
         parcel.writeInt(incrementBy);
         parcel.writeInt(maxPerPeriod);
+        parcel.writeString(period.name());
     }
 
     @Override
@@ -102,11 +102,11 @@ public class ActionUI implements Parcelable, ViewType {
     public static final class Builder {
         private final String id;
         private final String name;
-        private final Period period;
+        private final PeriodUI period;
         private final int incrementBy;
         private int maxPerPeriod;
 
-        public Builder(@NonNull String id, @NonNull String name, @NonNull Period period, int incrementBy) {
+        public Builder(@NonNull String id, @NonNull String name, @NonNull PeriodUI period, int incrementBy) {
             this.id = id;
             this.name = name;
             this.period = period;

@@ -1,28 +1,23 @@
 package com.colargtech.countonme.ui.model;
 
+import com.colargtech.countonme.R;
+
 /**
  * @author juancho.
  */
-public class PeriodUI {
+public enum PeriodUI {
+    MONTH(R.string.action_period_month),
+    DAY(R.string.action_period_day),
+    WEEK(R.string.action_period_week),
+    YEAR(R.string.action_period_year);
 
-    private final String value;
-    private final PeriodTypeUI typeUI;
+    private final int resValue;
 
-    public PeriodUI(String value, PeriodTypeUI typeUI) {
-        this.value = value;
-        this.typeUI = typeUI;
+    PeriodUI(int resValue) {
+        this.resValue = resValue;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public PeriodTypeUI getTypeUI() {
-        return typeUI;
-    }
-
-    @Override
-    public String toString() {
-        return value;
+    public int getResValue() {
+        return resValue;
     }
 }

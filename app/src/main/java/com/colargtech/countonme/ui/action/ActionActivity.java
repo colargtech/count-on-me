@@ -37,16 +37,6 @@ public class ActionActivity extends BaseActivity implements ActionsFragment.Acti
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Fragment homeFrag = getSupportFragmentManager().findFragmentByTag(ActionsFragment.class.getSimpleName());
-        if (homeFrag != null) {
-            homeFrag.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
     public void createNewAction(String groupID) {
         startActivityForResult(CreateActionActivity.newIntent(this, groupID), ACTION_CREATED);
     }

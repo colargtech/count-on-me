@@ -9,8 +9,8 @@ import com.colargtech.countonme.model.Period;
 import com.colargtech.countonme.ui.action.ActionsRxMapper;
 import com.colargtech.countonme.ui.action.create_action.CreateActionView;
 import com.colargtech.countonme.ui.model.ActionUI;
-import com.colargtech.countonme.ui.model.PeriodTypeUI;
 import com.colargtech.countonme.ui.model.PeriodUI;
+import com.colargtech.countonme.ui.model.PeriodModelUI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +54,11 @@ public class CreateActionPresenter extends MvpRxBasePresenter<CreateActionView> 
         getView().setIncrementByValues(incrementByValue);
 
         // TODO: sort and show first default value.
-        List<PeriodUI> periods = new ArrayList<>();
+        List<PeriodModelUI> periods = new ArrayList<>();
         for (Period period : Period.values()) {
-            PeriodTypeUI periodTypeUI = PeriodTypeUI.valueOf(period.name());
-            PeriodUI periodUI = new PeriodUI(context.getString(periodTypeUI.getResValue()), periodTypeUI);
-            periods.add(periodUI);
+            PeriodUI periodUI = PeriodUI.valueOf(period.name());
+            PeriodModelUI periodModelUI = new PeriodModelUI(context.getString(periodUI.getResValue()), periodUI);
+            periods.add(periodModelUI);
         }
 
         getView().setPeriodValues(periods);
@@ -70,7 +70,7 @@ public class CreateActionPresenter extends MvpRxBasePresenter<CreateActionView> 
         getView().setMaxPerDayValues(maxPerDay);
     }
 
-    public void createAction(String groupId, String name, PeriodUI period, int incrementBy, int maxPerDay) {
+    public void createAction(String groupId, String name, PeriodModelUI period, int incrementBy, int maxPerDay) {
         countOnMeDBManager.createAction(groupId, name, Period.valueOf(period.getTypeUI().name()), incrementBy, maxPerDay);
     }
 
