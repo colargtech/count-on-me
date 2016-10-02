@@ -3,6 +3,7 @@ package com.colargtech.countonme.di.home;
 import com.colargtech.countonme.database.di.CountOnMeDatabaseModule;
 import com.colargtech.countonme.di.AppModule;
 import com.colargtech.countonme.ui.action.ActionsFragment;
+import com.colargtech.countonme.ui.action.create_action.CreateActionFragment;
 import com.colargtech.countonme.ui.count.CountFragment;
 import com.colargtech.countonme.ui.home.view.HomeFragment;
 
@@ -20,6 +21,8 @@ import dagger.Component;
 public interface HomeComponent {
 
     void inject(HomeFragment homeFragment);
+
+    void inject(CreateActionFragment createActionFragment);
 
     void inject(ActionsFragment actionsFragment);
 

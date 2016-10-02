@@ -143,7 +143,7 @@ public class CountOnMeDBManager {
         }, this.configuration);
     }
 
-    public void createAction(final String groupId, final String name) {
+    public void createAction(final String groupId, final String name, final int incrementBy, final int maxPerPeriod) {
         RealmObservableUtils
                 .createObservableWithinRealmTransaction(new ActionWithRealm<ActionDB>() {
                     @Override
@@ -152,6 +152,8 @@ public class CountOnMeDBManager {
                         ActionDB actionDB = new ActionDB();
                         actionDB.setId(UUID.randomUUID().toString());
                         actionDB.setName(name);
+                        actionDB.setIncrementBy(incrementBy);
+                        actionDB.setMaxPerPeriod(maxPerPeriod);
                         groupDB.addAction(actionDB);
                         realm.copyToRealmOrUpdate(groupDB);
                         return actionDB;
@@ -167,6 +169,22 @@ public class CountOnMeDBManager {
                     @Override
                     public void call(Action action) {
                         actionCreatedSubject.onNext(action);
+                    }
+                });
+    }
+
+    public Observable<Action> getActionById(final String actionId) {
+        return RealmObservableUtils
+                .createObservableWithRealm(new ActionWithRealm<ActionDB>() {
+                    @Override
+                    public ActionDB call(Realm realm) {
+                        return realm.where(ActionDB.class).equalTo(_id, actionId).findFirst();
+                    }
+                }, this.configuration)
+                .map(new Func1<ActionDB, Action>() {
+                    @Override
+                    public Action call(ActionDB actionDB) {
+                        return actionDB.toAction();
                     }
                 });
     }

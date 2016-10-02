@@ -1,6 +1,7 @@
 package com.colargtech.countonme.ui.action;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -20,13 +21,12 @@ import com.colargtech.countonme.R;
 import com.colargtech.countonme.commons.ui.BaseFragment;
 import com.colargtech.countonme.ui.action.adapter.ActionDelegateAdapter;
 import com.colargtech.countonme.ui.action.adapter.ActionsAdapter;
+import com.colargtech.countonme.ui.action.create_action.CreateActionActivity;
 import com.colargtech.countonme.ui.action.presenter.ActionPresenter;
 import com.colargtech.countonme.ui.action.presenter.ActionView;
 import com.colargtech.countonme.ui.action.presenter.ActionsPresenter;
 import com.colargtech.countonme.ui.action.presenter.ActionsView;
 import com.colargtech.countonme.ui.model.ActionUI;
-
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -43,6 +43,8 @@ public class ActionsFragment extends BaseFragment implements ActionDelegateAdapt
      * If it's in landscape by HomeActivity, this should manage this actions.
      */
     interface ActionsNavigation {
+        void createNewAction(String groupID);
+
         void showActionDetail(ActionUI actionUI);
 
         void onDeleteGroup(String groupId);
@@ -80,7 +82,6 @@ public class ActionsFragment extends BaseFragment implements ActionDelegateAdapt
         attachCallbacks(actionsPresenter);
     }
 
-
     @Override
     protected void injectDependencies() {
         super.injectDependencies();
@@ -103,7 +104,7 @@ public class ActionsFragment extends BaseFragment implements ActionDelegateAdapt
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        actionsPresenter.createAction(groupID, UUID.randomUUID().toString());
+                        navigation.createNewAction(groupID);
                     }
                 });
     }
@@ -111,12 +112,23 @@ public class ActionsFragment extends BaseFragment implements ActionDelegateAdapt
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         try {
             navigation = (ActionsNavigation) getActivity();
         } catch (ClassCastException e) {
             Log.d(this.getClass().getSimpleName(), "Unable to cast Activity to ActionsNavigation.");
             throw e;
+        }
+    }
+
+    /**
+     * Only called when it a new activity was created in order to create a new action.
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == CreateActionActivity.ACTION_CREATED) {
+            String actionId = data.getStringExtra(CreateActionActivity.ACTION_CREATED_ID);
+            actionsPresenter.onActionCreated(actionId);
         }
     }
 

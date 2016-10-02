@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_input_name">Action Name</string>
+    <string name="action_label_period">Period to accumulate</string>
+
+    <string name="action_create_new">Create new Action</string>
+    <string name="action_created_msg">Action created successfully!</string>
+</resources>

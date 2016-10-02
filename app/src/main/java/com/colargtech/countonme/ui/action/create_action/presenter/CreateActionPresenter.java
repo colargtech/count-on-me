@@ -1,10 +1,14 @@
-package com.colargtech.countonme.ui.action.presenter;
+package com.colargtech.countonme.ui.action.create_action.presenter;
 
 import com.colargtech.countonme.commons.rx.MvpRxBasePresenter;
 import com.colargtech.countonme.database.manager.CountOnMeDBManager;
 import com.colargtech.countonme.model.Action;
-import com.colargtech.countonme.model.Group;
+import com.colargtech.countonme.model.Period;
+import com.colargtech.countonme.ui.action.create_action.CreateActionView;
 import com.colargtech.countonme.ui.model.ActionUI;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -18,51 +22,47 @@ import rx.schedulers.Schedulers;
 import rx.subjects.Subject;
 
 /**
- * @author gdfesta.
+ * @author juancho.
  */
-public class ActionsPresenter extends MvpRxBasePresenter<ActionsView> {
+public class CreateActionPresenter extends MvpRxBasePresenter<CreateActionView> {
 
     private final CountOnMeDBManager countOnMeDBManager;
     private final Subject<Action, Action> actionCreateSubject;
 
     @Inject
-    public ActionsPresenter(CountOnMeDBManager countOnMeDBManager, @Named("ActionCreate") Subject<Action, Action> actionCreateSubject) {
+    public CreateActionPresenter(CountOnMeDBManager countOnMeDBManager, @Named("ActionCreate") Subject<Action, Action> actionCreateSubject) {
         this.countOnMeDBManager = countOnMeDBManager;
         this.actionCreateSubject = actionCreateSubject;
-    }
-
-    @Override
-    public void onCreate(ActionsView view) {
-        super.onCreate(view);
-        addSubscription(subscribe(countOnMeDBManager.getAllActions(view.getGroupID())));
-        countOnMeDBManager
-                .getGroup(view.getGroupID())
-                .map(new Func1<Group, String>() {
-                    @Override
-                    public String call(Group group) {
-                        return group.name;
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String groupName) {
-                        if (isViewAttached()) {
-                            getView().setTitle(groupName);
-                        }
-                    }
-                });
     }
 
     @Override
     public void onResume() {
         super.onResume();
         addSubscription(subscribe(actionCreateSubject));
+
+        // TODO get incrementBy possible values:
+        List<Integer> incrementByValue = new ArrayList<>();
+        for (int i = 1; i <= 100; i++) {
+            incrementByValue.add(i);
+        }
+        getView().setIncrementByValues(incrementByValue);
+
+        List<String> periods = new ArrayList<>();
+        for (Period period : Period.values()) {
+            periods.add(period.name());
+        }
+
+        getView().setPeriodValues(periods);
+
+        List<Integer> maxPerDay = new ArrayList<>();
+        for (int i = 0; i <= 50; i++) {
+            maxPerDay.add(i);
+        }
+        getView().setMaxPerDayValues(maxPerDay);
     }
 
-    public void onActionCreated(String actionId) {
-        addSubscription(subscribe(countOnMeDBManager.getActionById(actionId)));
+    public void createAction(String groupId, String name, Period period, int incrementBy, int maxPerDay) {
+        countOnMeDBManager.createAction(groupId, name, incrementBy, maxPerDay);
     }
 
     private Subscription subscribe(Observable<Action> observable) {
@@ -71,7 +71,7 @@ public class ActionsPresenter extends MvpRxBasePresenter<ActionsView> {
                     @Override
                     public void call(ActionUI actionUI) {
                         if (isViewAttached()) {
-                            getView().addActionUI(actionUI);
+                            getView().onActionCreated(actionUI.getId());
                         }
                     }
                 });

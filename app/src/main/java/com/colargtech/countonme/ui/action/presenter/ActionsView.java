@@ -6,7 +6,6 @@ import com.colargtech.countonme.ui.model.ActionUI;
 /**
  * @author juancho.
  */
-
 public interface ActionsView extends MvpView {
 
     void addActionUI(ActionUI actionUI);
