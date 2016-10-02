@@ -5,4 +5,9 @@
 
     <string name="action_create_new">Create new Action</string>
     <string name="action_created_msg">Action created successfully!</string>
+
+    <string name="action_period_month">Month</string>
+    <string name="action_period_day">Day</string>
+    <string name="action_period_week">Week</string>
+    <string name="action_period_year">Year</string>
 </resources>

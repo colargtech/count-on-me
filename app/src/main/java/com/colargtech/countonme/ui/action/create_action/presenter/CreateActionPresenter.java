@@ -1,11 +1,16 @@
 package com.colargtech.countonme.ui.action.create_action.presenter;
 
+import android.content.Context;
+
 import com.colargtech.countonme.commons.rx.MvpRxBasePresenter;
 import com.colargtech.countonme.database.manager.CountOnMeDBManager;
 import com.colargtech.countonme.model.Action;
 import com.colargtech.countonme.model.Period;
+import com.colargtech.countonme.ui.action.ActionsRxMapper;
 import com.colargtech.countonme.ui.action.create_action.CreateActionView;
 import com.colargtech.countonme.ui.model.ActionUI;
+import com.colargtech.countonme.ui.model.PeriodTypeUI;
+import com.colargtech.countonme.ui.model.PeriodUI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +20,7 @@ import javax.inject.Named;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subjects.Subject;
 
 /**
@@ -28,9 +30,13 @@ public class CreateActionPresenter extends MvpRxBasePresenter<CreateActionView> 
 
     private final CountOnMeDBManager countOnMeDBManager;
     private final Subject<Action, Action> actionCreateSubject;
+    private final Context context;
 
     @Inject
-    public CreateActionPresenter(CountOnMeDBManager countOnMeDBManager, @Named("ActionCreate") Subject<Action, Action> actionCreateSubject) {
+    public CreateActionPresenter(Context context,
+                                 CountOnMeDBManager countOnMeDBManager,
+                                 @Named("ActionCreate") Subject<Action, Action> actionCreateSubject) {
+        this.context = context;
         this.countOnMeDBManager = countOnMeDBManager;
         this.actionCreateSubject = actionCreateSubject;
     }
@@ -47,9 +53,12 @@ public class CreateActionPresenter extends MvpRxBasePresenter<CreateActionView> 
         }
         getView().setIncrementByValues(incrementByValue);
 
-        List<String> periods = new ArrayList<>();
+        // TODO: sort and show first default value.
+        List<PeriodUI> periods = new ArrayList<>();
         for (Period period : Period.values()) {
-            periods.add(period.name());
+            PeriodTypeUI periodTypeUI = PeriodTypeUI.valueOf(period.name());
+            PeriodUI periodUI = new PeriodUI(context.getString(periodTypeUI.getResValue()), periodTypeUI);
+            periods.add(periodUI);
         }
 
         getView().setPeriodValues(periods);
@@ -61,12 +70,12 @@ public class CreateActionPresenter extends MvpRxBasePresenter<CreateActionView> 
         getView().setMaxPerDayValues(maxPerDay);
     }
 
-    public void createAction(String groupId, String name, Period period, int incrementBy, int maxPerDay) {
-        countOnMeDBManager.createAction(groupId, name, incrementBy, maxPerDay);
+    public void createAction(String groupId, String name, PeriodUI period, int incrementBy, int maxPerDay) {
+        countOnMeDBManager.createAction(groupId, name, Period.valueOf(period.getTypeUI().name()), incrementBy, maxPerDay);
     }
 
     private Subscription subscribe(Observable<Action> observable) {
-        return fromActionToActionUI(observable)
+        return ActionsRxMapper.fromActionToActionUI(observable)
                 .subscribe(new Action1<ActionUI>() {
                     @Override
                     public void call(ActionUI actionUI) {
@@ -75,19 +84,5 @@ public class CreateActionPresenter extends MvpRxBasePresenter<CreateActionView> 
                         }
                     }
                 });
-    }
-
-    private Observable<ActionUI> fromActionToActionUI(Observable<Action> observable) {
-        return observable.map(
-                new Func1<Action, ActionUI>() {
-                    @Override
-                    public ActionUI call(Action action) {
-                        ActionUI.Builder builder = new ActionUI.Builder(action.id, action.name, action.period, action.incrementBy);
-                        return builder.build();
-                    }
-                })
-                .onBackpressureBuffer()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
     }
 }

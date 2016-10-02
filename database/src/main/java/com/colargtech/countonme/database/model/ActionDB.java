@@ -30,6 +30,8 @@ public class ActionDB extends RealmObject {
 
     private int maxPerPeriod;
 
+    private String period;
+
     public ActionDB() {
         counts = new RealmList<>();
     }
@@ -74,8 +76,16 @@ public class ActionDB extends RealmObject {
         this.incrementBy = incrementBy;
     }
 
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
+    }
+
     public Action toAction() {
-        Action.Builder builder = new Action.Builder(id, name, Period.DAY, incrementBy);
+        Action.Builder builder = new Action.Builder(id, name, Period.valueOf(period), incrementBy);
         return builder.build();
     }
 }

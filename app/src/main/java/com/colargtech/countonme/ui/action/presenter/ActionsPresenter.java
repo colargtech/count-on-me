@@ -4,6 +4,7 @@ import com.colargtech.countonme.commons.rx.MvpRxBasePresenter;
 import com.colargtech.countonme.database.manager.CountOnMeDBManager;
 import com.colargtech.countonme.model.Action;
 import com.colargtech.countonme.model.Group;
+import com.colargtech.countonme.ui.action.ActionsRxMapper;
 import com.colargtech.countonme.ui.model.ActionUI;
 
 import javax.inject.Inject;
@@ -66,7 +67,7 @@ public class ActionsPresenter extends MvpRxBasePresenter<ActionsView> {
     }
 
     private Subscription subscribe(Observable<Action> observable) {
-        return fromActionToActionUI(observable)
+        return ActionsRxMapper.fromActionToActionUI(observable)
                 .subscribe(new Action1<ActionUI>() {
                     @Override
                     public void call(ActionUI actionUI) {
@@ -75,19 +76,5 @@ public class ActionsPresenter extends MvpRxBasePresenter<ActionsView> {
                         }
                     }
                 });
-    }
-
-    private Observable<ActionUI> fromActionToActionUI(Observable<Action> observable) {
-        return observable.map(
-                new Func1<Action, ActionUI>() {
-                    @Override
-                    public ActionUI call(Action action) {
-                        ActionUI.Builder builder = new ActionUI.Builder(action.id, action.name, action.period, action.incrementBy);
-                        return builder.build();
-                    }
-                })
-                .onBackpressureBuffer()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
     }
 }

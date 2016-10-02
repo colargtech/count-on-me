@@ -6,6 +6,7 @@ import com.colargtech.countonme.database.model.GroupDB;
 import com.colargtech.countonme.model.Action;
 import com.colargtech.countonme.model.ActionCount;
 import com.colargtech.countonme.model.Group;
+import com.colargtech.countonme.model.Period;
 import com.colargtech.countonme.model.Range;
 import com.colargtech.rx_realm.ActionWithRealm;
 import com.colargtech.rx_realm.RealmObservableUtils;
@@ -143,7 +144,7 @@ public class CountOnMeDBManager {
         }, this.configuration);
     }
 
-    public void createAction(final String groupId, final String name, final int incrementBy, final int maxPerPeriod) {
+    public void createAction(final String groupId, final String name, final Period period, final int incrementBy, final int maxPerPeriod) {
         RealmObservableUtils
                 .createObservableWithinRealmTransaction(new ActionWithRealm<ActionDB>() {
                     @Override
@@ -154,6 +155,7 @@ public class CountOnMeDBManager {
                         actionDB.setName(name);
                         actionDB.setIncrementBy(incrementBy);
                         actionDB.setMaxPerPeriod(maxPerPeriod);
+                        actionDB.setPeriod(period.name());
                         groupDB.addAction(actionDB);
                         realm.copyToRealmOrUpdate(groupDB);
                         return actionDB;
